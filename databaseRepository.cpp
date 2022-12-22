@@ -59,34 +59,21 @@ unsigned long long DatabaseRepository::user_register (QString user_name, QString
     unsigned int user_role = 0;
     switch(role){
     case User::STUDENT:
-        user_role = 1;
-        break;
-    case User::ADMIN:
-        user_role = 2;
+        user_role = 0;
         break;
     case User::TEACHER:
-        user_role = 3;
+        user_role = 1;
+        break;
+    case User::ADMIN :
+        user_role = 2;
         break;
     case User::OUTCOME:
-        user_role = 4;
+        user_role = 3;
         break;
     }
-
-    query = "INSERT INTO user (user_name, passwd, role) VALUES ('" + user_name + "', '" + passwd + "', " + QString::number(user_role) + ");";
-    QSqlQuery sql_query;
-    sql_query.prepare(query);
-    if(!sql_query.exec()){
-        QMessageBox::critical(NULL, "Error", "Database operation Failed !");
-        exit(2);
-    }
-    query = "SELECT user_id FROM user WHERE user_name = '" + user_name + "';";
-    sql_query.prepare(query);
-    if(!sql_query.exec()){
-        QMessageBox::critical(NULL, "Error", "Database operation Failed !");
-        exit(2);
-    }
-    sql_query.next();
-    return sql_query.value(0).toULongLong();
+    
+	query = "INSERT INTO user (user_name, passwd, user_role) VALUES ('" + user_name + "', '" + passwd + "', " + QString::number(user_role) + ");";
+    
 }
 
 bool check_username_usable(QString user_name){
@@ -121,17 +108,7 @@ LibraryBookInfo::Book find_book_from_ISBN(QString ISBN){
         exit(2);
     }
     sql_query.next();
-    LibraryBookInfo::Book book(sql_query.value(0), sql_query.value(1), sql_query.value(2).toULongLong(), sql_query.value(3).toLongLong(), sql_query.value(4), sql_query.value(5));
-
-//    book.book_id = sql_query.value(0).toULongLong();
-//    book.ISBN = sql_query.value(1).toString();
-//    book.book_name = sql_query.value(2).toString();
-//    book.author = sql_query.value(3).toString();
-//    book.publisher = sql_query.value(4).toString();
-//    book.publish_date = sql_query.value(5).toString();
-//    book.price = sql_query.value(6).toDouble();
-//    book.book_index = sql_query.value(7).toULongLong();
-//    book.book_status = sql_query.value(8).toUInt();
+    //LibraryBookInfo::Book book(sql_query.value(0), sql_query.value(1), sql_query.value(2).toULongLong(), sql_query.value(3).toLongLong(), sql_query.value(4), sql_query.value(5));
     return book;
 }
 
@@ -159,7 +136,7 @@ bool get_book_numbers(LibraryBookInfo::Book book){
 bool insert_book(BookInfo book_info)
 {
     LibraryBookInfo::Book book = book_info.get_book();
-    QString query = "INSERT INTO book (ISBN, book_name, author, publisher, publish_date, price, book_index, book_status) VALUES ('" + book.ISBN + "', '" + book.book_name + "', '" + book.author + "', '" + book.publisher + "', '" + book.publish_date + "', " + QString::number(book.price) + ", " + QString::number(book.book_index) + ", " + QString::number(book.book_status) + ");";
+    //QString query = "INSERT INTO book (ISBN, book_name, author, publisher, publish_date, price, book_index, book_status) VALUES ('" + book.ISBN + "', '" + book.book_name + "', '" + book.author + "', '" + book.publisher + "', '" + book.publish_date + "', " + QString::number(book.price) + ", " + QString::number(book.book_index) + ", " + QString::number(book.book_status) + ");";
 
     QSqlQuery sql_query;
     sql_query.prepare(query);
