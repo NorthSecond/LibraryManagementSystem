@@ -132,8 +132,12 @@ void MainWindow::login_btn_pushed()
 			if (role_id == User::ADMIN) {
 				// admin main window
 				QWidget* adminWid = new AdminWindow(this);
+				emit sendLoginInfo(login_res);
 				adminWid->show();
 				this->hide();
+			}
+			else {
+				emit sendLoginInfo(login_res);
 			}
 		}
 		else {
@@ -147,3 +151,8 @@ void MainWindow::exit_btn_pushed()
 {
 	exit(0);
 }
+
+//void MainWindow::closeEvent(QCloseEvent* event)
+//{
+//	exit(0);
+//}

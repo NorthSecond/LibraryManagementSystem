@@ -91,6 +91,35 @@ unsigned long long DatabaseRepository::user_register (QString user_name, QString
 	return 0;
 }
 
+AdminInfo DatabaseRepository::get_admin_info(unsigned long long admin_id) {
+	QString query = "SELECT * FROM admininfo WHERE admin_id = " + QString::number(admin_id);
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	if (sql_query.next()) {
+		unsigned long long connection_id = sql_query.value(3).toULongLong();
+		ConnectionInfo connection_info = get_connection_info(connection_id);
+		return AdminInfo(sql_query.value(0).toULongLong(), sql_query.value(2).toString(), 
+			connection_info, sql_query.value(4).toString(), sql_query.value(5).toString());
+	}
+	else {
+		return AdminInfo();
+	}
+}
+
+ConnectionInfo DatabaseRepository::get_connection_info(unsigned long long user_id)
+{
+	QString query = "SELECT * FROM connection_info WHERE id = " + QString::number(user_id);
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	if (sql_query.next()) {
+		return ConnectionInfo(sql_query.value(0).toULongLong(), sql_query.value(1).toString(), 
+			sql_query.value(2).toString(), sql_query.value(3).toString(), sql_query.value(4).toString());
+	}
+	else {
+		return ConnectionInfo();
+	}
+}
+
 bool check_username_usable(QString user_name){
     QString query = "SELECT user_id FROM user WHERE user_name = '" + user_name + "';";
     QSqlQuery sql_query;

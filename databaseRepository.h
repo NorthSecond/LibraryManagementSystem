@@ -6,6 +6,7 @@
 
 #include "userinfo.h"
 #include "bookinfo.h"
+#include "connectioninfo.h"
 
 class DatabaseRepository
 {
@@ -20,6 +21,9 @@ public:
     unsigned long long login(QString user_name, QString passwd, User::Role role);
     unsigned long long user_register(QString user_name, QString passwd, User::Role role);
 
+	AdminInfo get_admin_info(unsigned long long admin_id);
+	ConnectionInfo get_connection_info(unsigned long long user_id);
+    
     unsigned long long addBookInfo(LibraryBookInfo::Book book);
     unsigned long long addBook(LibraryBookInfo::Book book, LibraryBookInfo::bookStatus status);
     bool changeBookStatus(unsigned long long book_index, LibraryBookInfo::bookStatus status);

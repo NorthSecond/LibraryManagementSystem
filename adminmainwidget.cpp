@@ -8,6 +8,33 @@ AdminMainWidget::AdminMainWidget(QWidget *parent) :
     ui->setupUi(this);
 }
 
+AdminMainWidget::AdminMainWidget(QGraphicsView* view, QString name, QWidget* parent) :
+	QWidget(parent),
+	ui(new Ui::AdminMainWidget)
+{
+	ui->setupUi(this);
+	ui->grap->setScene(view->scene());
+	ui->name_lbl->setText(name);
+}
+
+AdminMainWidget::AdminMainWidget(QString name, QWidget* parent) :
+	QWidget(parent),
+	ui(new Ui::AdminMainWidget)
+{
+	ui->setupUi(this);
+	ui->name_lbl->setText(name);
+}
+
+void AdminMainWidget::setGrap(QGraphicsView* view)
+{
+	this->ui->grap = view;
+}
+
+void AdminMainWidget::setNameLbl(QString name)
+{
+	this->ui->name_lbl->setText(name);
+}
+
 AdminMainWidget::~AdminMainWidget()
 {
     delete ui;

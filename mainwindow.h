@@ -42,7 +42,10 @@ private:
 	QLineEdit* password_line;
 	QComboBox* role_combo;
 
-public slots:
+signals:
+	void sendLoginInfo(unsigned long long id);
+
+private slots:
 	void login_btn_pushed();
 	void exit_btn_pushed();
 };
