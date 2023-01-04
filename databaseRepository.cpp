@@ -1,103 +1,118 @@
-//#include "databaseRepository.h"
+#include "databaseRepository.h"
 
-//DatabaseRepository::DatabaseRepository()
-//{
-//    QString hostName = "127.0.0.1";
-//    int port = 3306;
-//    QString databaseName = "lib_idx";
-//    QString userName = "root";
-//    QString password = "357480";
-//    initializeDatabase(hostName, port, databaseName, userName, password);
-//}
+DatabaseRepository::DatabaseRepository()
+{
+	QString hostName = "127.0.0.1";
+	int port = 3306;
+	QString databaseName = "lib_idx";
+	QString userName = "root";
+	QString password = "357480";
+	initializeDatabase(hostName, port, databaseName, userName, password);
+}
 
-//DatabaseRepository::DatabaseRepository(QString host_name, int port, QString database_name, QString user_name, QString password){
-//    initializeDatabase(host_name, port, database_name, user_name, password);
-//}
+DatabaseRepository::DatabaseRepository(QString host_name, int port, QString database_name, QString user_name, QString password) {
+	initializeDatabase(host_name, port, database_name, user_name, password);
+}
 
-//void DatabaseRepository::initializeDatabase(QString hostName, int port, QString databaseName, QString userName, QString password){
-//    db = QSqlDatabase::addDatabase("QODBC");
-//    db.setHostName(hostName);
-//    db.setPort(port);
-//    QString connectString = QStringLiteral(
-//        "DRIVER={MySQL ODBC 8.0 Unicode Driver};"
-//        "SERVER=%1:%2;"
-//        "DATABASE=%3;"
-//        "UID=%4;"
-//        "PWD=%5;").arg(hostName).arg(port).arg(databaseName).arg(userName).arg(password);
-//    db.setDatabaseName(connectString);
-//    db.setUserName(userName);
-//    db.setPassword(password);
-//    if (!db.open())
-//    {// fail to open database
-//        QMessageBox::critical(NULL, "Error", "Database connection failed!");
-//        exit(2);
-//    }
-//}
+void DatabaseRepository::initializeDatabase(QString hostName, int port, QString databaseName, QString userName, QString password) {
+	db = QSqlDatabase::addDatabase("QODBC");
+	db.setHostName(hostName);
+	db.setPort(port);
+	QString connectString = QStringLiteral(
+		"DRIVER={MySQL ODBC 8.0 Unicode Driver};"
+		"SERVER=%1:%2;"
+		"DATABASE=%3;"
+		"UID=%4;"
+		"PWD=%5;").arg(hostName).arg(port).arg(databaseName).arg(userName).arg(password);
+	db.setDatabaseName(connectString);
+	db.setUserName(userName);
+	db.setPassword(password);
+	if (!db.open())
+	{// fail to open database
+		QMessageBox::critical(NULL, "Error", "Database connection failed!");
+		exit(2);
+	}
+}
 
-//DatabaseRepository::~DatabaseRepository(){
-//    db.close();
-//}
+DatabaseRepository::~DatabaseRepository() {
+	db.close();
+}
 
-//unsigned long long DatabaseRepository::login(QString user_name, QString passwd, User::Role role){
-//    QString query = "";
-//    switch(role){
-//    case User::STUDENT:
-//        break;
-//    case User::ADMIN:
-//        break;
-//    case User::TEACHER:
-//        break;
-//    case User::OUTCOME:
-//        break;
-//    }
-//    return 0;
-//}
+unsigned long long DatabaseRepository::login(QString user_name, QString passwd, User::Role role) {
+	int role_int = static_cast<int>(role);
 
-//unsigned long long DatabaseRepository::user_register (QString user_name, QString passwd, User::Role role)
-//{
-//    QString query = "";
-//    unsigned int user_role = 0;
-//    switch(role){
-//    case User::STUDENT:
-//        user_role = 0;
-//        break;
-//    case User::TEACHER:
-//        user_role = 1;
-//        break;
-//    case User::ADMIN :
-//        user_role = 2;
-//        break;
-//    case User::OUTCOME:
-//        user_role = 3;
-//        break;
-//    }
-    
-//	query = "INSERT INTO user (user_name, passwd, user_role) VALUES ('" + user_name + "', '" + passwd + "', " + QString::number(user_role) + ");";
-    
-//}
+	QString query;
 
-//bool check_username_usable(QString user_name){
-//    QString query = "SELECT user_id FROM user WHERE user_name = '" + user_name + "';";
-//    QSqlQuery sql_query;
+	switch (role) {
+	case User::ADMIN:
+		query = "SELECT * FROM admininfo WHERE admin_name = \'" + user_name
+			+ "\' AND passwd = \'" + passwd + "\'";
+		break;
+	case User::STUDENT:
+	case User::TEACHER:
+	case User::OUTCOME:
+		query = "SELECT * FROM reader_info WHERE reader_id = \'" + user_name
+			+ "\' AND passwd = \'" + passwd + "\' AND reader_type = " +
+			QString::fromStdString(std::to_string(role_int));
+		break;
+	}
 
-//    sql_query.prepare(query);
-//    if(!sql_query.exec()){
-//        QMessageBox::critical(NULL, "Error", "Database operation Failed !");
-//        exit(2);
-//    }
-//    if(sql_query.next()){
-//        return false;
-//    }
-//    return true;
-//}
+	// query the sql sentence
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	if (sql_query.next()) {
+		return sql_query.value(0).toULongLong();
+	}
+	else {
+		return 0;
+	}
+}
 
-//unsigned long long DatabaseRepository::borrow_book(unsigned long long user_id, unsigned long long book_index, unsigned long long admin_id){
+unsigned long long DatabaseRepository::user_register (QString user_name, QString passwd, User::Role role)
+{
+    QString query = "";
+    unsigned int user_role = 0;
+    switch(role){
+    case User::STUDENT:
+        user_role = 0;
+        break;
+    case User::TEACHER:
+        user_role = 1;
+        break;
+    case User::ADMIN :
+        user_role = 2;
+        break;
+    case User::OUTCOME:
+        user_role = 3;
+        break;
+    }
 
-//}
+	query = "INSERT INTO  (user_name, passwd, user_role) VALUES ('" + user_name + "', '" + passwd + "', " + QString::number(user_role) + ");";
+	return 0;
+}
 
-//unsigned long long DatabaseRepository::return_book(unsigned long long book_id){
+bool check_username_usable(QString user_name){
+    QString query = "SELECT user_id FROM user WHERE user_name = '" + user_name + "';";
+    QSqlQuery sql_query;
 
-//}
+    sql_query.prepare(query);
+    if(!sql_query.exec()){
+        QMessageBox::critical(NULL, "Error", "Database operation Failed !");
+        exit(2);
+    }
+    if(sql_query.next()){
+        return false;
+    }
+    return true;
+}
+
+unsigned long long DatabaseRepository::borrow_book(unsigned long long user_id, unsigned long long book_index, unsigned long long admin_id){
+	return 0;
+}
+
+unsigned long long DatabaseRepository::return_book(unsigned long long book_id){
+	return 0;
+}
 
 //LibraryBookInfo::Book find_book_from_ISBN(QString ISBN){
 //    QString query = "SELECT * FROM book WHERE ISBN = '" + ISBN + "';";
@@ -170,3 +185,8 @@
 ////    sql_query.prepare(query);
 //    return sql_query.exec();
 //}
+
+
+
+// global variable
+DatabaseRepository* db_repo = new DatabaseRepository();

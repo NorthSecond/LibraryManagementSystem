@@ -2,9 +2,9 @@
 
 namespace User{
     enum Role{
+        ADMIN,
         STUDENT,
         TEACHER,
-        ADMIN,
         OUTCOME
     };
 

@@ -11,10 +11,15 @@
 #include <QMessageBox>
 #include <QString>
 
+#include "databaseRepository.h"
+#include "ui_mainwindow.h"
+#include "adminwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+extern DatabaseRepository* db_repo;
 
 class MainWindow : public QMainWindow
 {

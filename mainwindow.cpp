@@ -1,12 +1,11 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	
+
 	QFont font("Microsoft YaHei", 12, 75);
 
 	this->setWindowTitle("图书管理系统-请登录");
@@ -44,7 +43,10 @@ MainWindow::MainWindow(QWidget* parent)
 	role_combo->setGeometry(120, 140, 140, 25);
 	role_combo->setFont(font);
 	role_combo->addItem("管理员");
-	role_combo->addItem("读者");
+	role_combo->addItem("学生");
+	role_combo->addItem("教师");
+	role_combo->addItem("外来人员");
+
 
 	login_btn = new QPushButton(this);
 	login_btn->setText("登录");
@@ -105,8 +107,39 @@ void MainWindow::login_btn_pushed()
 		}
 	}
 	else {
-		// TODO: DB operation
+		User::Role role_id = User::Role::ADMIN;
+		if (role == QString::fromStdString("管理员")
+			|| role == QString::fromStdString("admin")) {
+			role_id = User::Role::ADMIN;
+		}
+		else if (role == QString::fromStdString("学生")
+			|| role == QString::fromStdString("student")) {
+			role_id = User::Role::STUDENT;
+		}
+		else if (role == QString::fromStdString("教师")
+			|| role == QString::fromStdString("teacher")) {
+			role_id = User::Role::TEACHER;
+		}
+		else if (role == QString::fromStdString("外来人员")
+			|| role == QString::fromStdString("visitor")) {
+			role_id = User::Role::OUTCOME;
+		}
 		
+		unsigned long long login_res = db_repo->login(user, password, role_id);
+
+		if (login_res) {
+			// success
+			if (role_id == User::ADMIN) {
+				// admin main window
+				QWidget* adminWid = new AdminWindow(this);
+				adminWid->show();
+				this->hide();
+			}
+		}
+		else {
+			// login failed
+			QMessageBox::warning(this, "错误", "用户名或密码错误", "确定");
+		}
 	}
 }
 
