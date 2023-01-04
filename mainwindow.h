@@ -11,8 +11,6 @@
 #include <QMessageBox>
 #include <QString>
 
-#include "databaseRepository.h"
-#include "adminmainwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,26 +21,23 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    const unsigned int window_width = 640;
-    const unsigned int window_height = 480;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
-    QLabel* username_lbl;
-    QLabel* passwd_lbl;
-    QLabel* identity_lbl;
+	QPushButton* login_btn;
+	QPushButton* exit_btn;
+    
+	QLabel* user_label;
+	QLabel* password_label;
+	QLabel* role_label;
+	
+	QLineEdit* user_line;
+	QLineEdit* password_line;
+	QComboBox* role_combo;
 
-    QLineEdit* username_edit;
-    QLineEdit* passwd_edit;
-    QComboBox* identity_box;
-
-    QPushButton* login_btn;
-    QPushButton* exit_btn;
-
-    DatabaseRepository db;
 public slots:
-    void login_btn_pushed();
-    void exit_btn_pushed();
+	void login_btn_pushed();
+	void exit_btn_pushed();
 };

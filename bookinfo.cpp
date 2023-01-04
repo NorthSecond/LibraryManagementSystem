@@ -9,6 +9,8 @@ BookInfo::BookInfo(LibraryBookInfo::Book book)
 
 }
 
+
+
 //BookInfo::BookInfo(QString ISBN){
 //    this->book = db.get_book_from_ISBN();
 

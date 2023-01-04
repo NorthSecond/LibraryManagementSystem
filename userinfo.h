@@ -25,6 +25,7 @@ private:
     unsigned int borrowed_num;
 public:
     UserInfo(unsigned long long user_id, User::Role user_role, User::Status user_status);
+    UserInfo();
     bool commitToDB();
 
 };

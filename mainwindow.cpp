@@ -1,131 +1,116 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow), db()
+MainWindow::MainWindow(QWidget* parent)
+	: QMainWindow(parent)
+	, ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
+	
+	QFont font("Microsoft YaHei", 12, 75);
 
-    this->setFixedSize(window_width, window_height);
-    this->setWindowTitle("图书管理系统-请登录");
-    //this->setWindowIcon(QIcon("icon.png"));
+	this->setWindowTitle("图书管理系统-请登录");
+	//this->setWindowIcon(QIcon("icon.png"));
+	this->setFixedSize(320, 240);
 
-    username_lbl = new QLabel(this);
-    username_lbl->setText("账户名：");
-    username_lbl->setGeometry(120, 50, 50, 30);
-    username_lbl->setStyleSheet("font-size:12px;font - weight:bold; font - family:Arial");
+	user_label = new QLabel(this);
+	user_label->setText("用户名:");
+	user_label->setGeometry(30, 40, 80, 25);
+	user_label->setFont(font);
+	user_label->setAlignment(Qt::AlignRight);
 
-    passwd_lbl = new QLabel(this);
-    passwd_lbl->setText("密码：");
-    passwd_lbl->setGeometry(120, 90, 50, 30);
-    passwd_lbl->setStyleSheet("font-size:12px;font - weight:bold; font - family:Arial");
+	password_label = new QLabel(this);
+	password_label->setText("密  码:");
+	password_label->setGeometry(30, 90, 80, 25);
+	password_label->setFont(font);
+	password_label->setAlignment(Qt::AlignRight);
 
-    identity_lbl = new QLabel(this);
-    identity_lbl->setText("身份：");
-    identity_lbl->setGeometry(120, 130, 50, 30);
-    identity_lbl->setStyleSheet("font-size:12px;font - weight:bold; font - family:Arial");
+	role_label = new QLabel(this);
+	role_label->setText("身  份:");
+	role_label->setGeometry(30, 140, 80, 25);
+	role_label->setFont(font);
+	role_label->setAlignment(Qt::AlignRight);
 
-    username_edit = new QLineEdit(this);
-    username_edit->setGeometry(180, 50, 80, 30);
-    passwd_edit = new QLineEdit(this);
-    passwd_edit->setGeometry(180, 90, 80, 30);
+	user_line = new QLineEdit(this);
+	user_line->setFont(font);
+	user_line->setGeometry(120, 40, 140, 25);
 
-    identity_box = new QComboBox(this);
-    identity_box->addItem(QString::asprintf("用户"));
-    identity_box->addItem(QString::asprintf("管理员"));
-    identity_box->setGeometry(180, 130, 50, 30);
+	password_line = new QLineEdit(this);
+	password_line->setGeometry(120, 90, 140, 25);
+	password_line->setFont(font);
+	password_line->setEchoMode(QLineEdit::Password);
 
-    login_btn = new QPushButton(this);
-    login_btn->setText(QString::asprintf("登陆"));
-    login_btn->setGeometry(300, 250, 50, 30);
+	role_combo = new QComboBox(this);
+	role_combo->setGeometry(120, 140, 140, 25);
+	role_combo->setFont(font);
+	role_combo->addItem("管理员");
+	role_combo->addItem("读者");
 
-    exit_btn = new QPushButton(this);
-    exit_btn->setText(QString::asprintf("退出"));
-    exit_btn->setGeometry(420, 250, 50, 30);
+	login_btn = new QPushButton(this);
+	login_btn->setText("登录");
+	login_btn->setFont(font);
+	login_btn->setGeometry(40, 190, 75, 25);
 
+	exit_btn = new QPushButton(this);
+	exit_btn->setText("退出");
+	exit_btn->setFont(font);
+	exit_btn->setGeometry(190, 190, 75, 25);
 
-    connect(login_btn, &QPushButton::clicked, this, &MainWindow::login_btn_pushed);
-    connect(exit_btn, &QPushButton::clicked, this, &MainWindow::exit_btn_pushed);
+	connect(login_btn, &QPushButton::clicked, this, &MainWindow::login_btn_pushed);
+	connect(exit_btn, &QPushButton::clicked, this, &MainWindow::exit_btn_pushed);
 }
 
 MainWindow::~MainWindow()
 {
-    if(username_lbl != nullptr){
-        delete username_lbl;
-    }
-    if(passwd_lbl != nullptr) {
-        delete passwd_lbl;
-    }
-    if(identity_lbl != nullptr) {
-        delete identity_lbl;
-    }
-    if(username_edit != nullptr) {
-        delete username_edit;
-    }
-    if(passwd_edit != nullptr) {
-        delete passwd_edit;
-    }
-    if(identity_box!= nullptr) {
-        delete identity_box;
-    }
-    if(login_btn != nullptr){
-        delete login_btn;
-    }
-    if(exit_btn!= nullptr){
-        delete exit_btn;
-    }
-    // TODO: FInish delete sentences.
-    delete ui;
+	if (user_label != nullptr) {
+		delete user_label;
+	}
+	if (password_label != nullptr) {
+		delete password_label;
+	}
+	if (role_label != nullptr) {
+		delete role_label;
+	}
+	if (user_line != nullptr) {
+		delete user_line;
+	}
+	if (password_line != nullptr) {
+		delete password_line;
+	}
+	if (role_combo != nullptr) {
+		delete role_combo;
+	}
+	if (login_btn != nullptr) {
+		delete login_btn;
+	}
+	if (exit_btn != nullptr) {
+		delete exit_btn;
+	}
+	delete ui;
 }
 
-void MainWindow::login_btn_pushed(){
-//    QMessageBox::critical(NULL, "Info", "TODO");
-    QString user_name = username_edit->text();
-    QString passwd = passwd_edit->text();
-    Role role;
-    size_t identity_index = identity_box->currentIndex();
-    switch(identity_index){
-    case 0:
-        role = Role::STUDENT;
-        break;
-    case 1:
-        role = Role::TEACHER;
-        break;
-    case 2:
-        role = Role::Admin;
-        break;
-    case 3:
-        role = Role::OUTCOME;
-        break;
-    default:
-        throw("Undefined role\n");
-        exit(3);
-        break;
-    }
-    long long uid = db.login(user_name, passwd, role);
-    if(uid < 0){
-        QMessageBox::warning(NULL, "登陆失败！", "用户名或密码错误");
-    }else {
-        // TODO: Add different userType
-        // 使用槽函数进行窗口的数据传播
-        std::unique_ptr<QWidget> newWidget;
-        newWidget.reset(new AdminMainWidget());
-//        QWidget* newWidget = new AdminMainWidget();
-//        if(uid == 0){
-//            newWidget = new AdminMainWidget();
-//        }else if(uid == 1){
-//            newWidget = new AdminMainWidget();
-//        }else if(uid == 2){
-//            newWidget = new AdminMainWidget();
-//        }else if(uid == 3){
-//            newWidget = new AdminMainWidget();
-//        }
-        newWidget->show();
-        this->hide();
-    }
+void MainWindow::login_btn_pushed()
+{
+	QString user = user_line->text();
+	QString password = password_line->text();
+	QString role = role_combo->currentText();
+	if (user.isEmpty() || password.isEmpty()) {
+		QMessageBox::warning(this, "警告", "用户名或密码不能为空");
+		return;
+		if (password.isEmpty()) {
+			password_line->setFocus();
+		}
+		if (user.isEmpty()) {
+			user_line->setFocus();
+		}
+	}
+	else {
+		// TODO: DB operation
+		
+	}
 }
 
-void MainWindow::exit_btn_pushed() {
-    exit(0);
+void MainWindow::exit_btn_pushed()
+{
+	exit(0);
 }
