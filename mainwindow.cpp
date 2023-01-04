@@ -126,15 +126,16 @@ void MainWindow::login_btn_pushed()
 		}
 		
 		unsigned long long login_res = db_repo->login(user, password, role_id);
-
 		if (login_res) {
 			// success
 			if (role_id == User::ADMIN) {
 				// admin main window
 				QWidget* adminWid = new AdminWindow(this);
-				emit sendLoginInfo(login_res);
+				connect(this, SIGNAL(sendLoginInfo(unsigned long long)),
+					adminWid, SLOT(getUserInfo(unsigned long long)));
 				adminWid->show();
 				this->hide();
+				emit sendLoginInfo(login_res);
 			}
 			else {
 				emit sendLoginInfo(login_res);

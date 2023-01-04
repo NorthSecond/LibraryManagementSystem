@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QMessagebox>
 
+#include "databaseRepository.h"
 #include "adminmainwidget.h"
 #include "userinfo.h"
 
@@ -24,7 +25,7 @@ protected:
 private:
     Ui::AdminWindow *ui;
 	unsigned long long id;
-    
+	AdminInfo admin_info;
 
 public slots:
     void getUserInfo(unsigned long long id);

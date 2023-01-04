@@ -20,7 +20,7 @@ AdminWindow::AdminWindow(QWidget *parent) :
 	this->ui->rtn_man_wid->setGeometry(QRect(190, 180, 240, 160));
 	this->ui->ban_man_wid->setGeometry(QRect(450, 180, 240, 160));
 
-	
+	//connect(parent, SIGNAL(sendLoginInfo(QString)), this, SLOT(getUserInfo(QString)));
 }
 
 // 设置鼠标点击事件
@@ -52,6 +52,9 @@ AdminWindow::~AdminWindow()
 
 void AdminWindow::getUserInfo(unsigned long long id)
 {
+	this->id = id;
+	admin_info = db_repo->get_admin_info(id);
+	this->ui->username_lbl->setText(admin_info.get_admin_name());
 }
 
 void AdminWindow::on_change_btn_clicked()
