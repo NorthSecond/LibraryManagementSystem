@@ -35,6 +35,15 @@ void AdminMainWidget::setNameLbl(QString name)
 	this->ui->name_lbl->setText(name);
 }
 
+void AdminMainWidget::mouseReleaseEvent(QMouseEvent* ev)
+{
+	Q_UNUSED(ev)
+	if (ev->button() == Qt::LeftButton)
+	{
+		emit clicked();
+	}
+}
+
 AdminMainWidget::~AdminMainWidget()
 {
     delete ui;

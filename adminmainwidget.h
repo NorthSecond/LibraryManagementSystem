@@ -2,6 +2,8 @@
 
 #include <QWidget>
 #include <QGraphicsView>
+#include <QEvent>
+#include <QMouseEvent>
 
 namespace Ui {
 class AdminMainWidget;
@@ -19,6 +21,12 @@ public:
     ~AdminMainWidget();
 	void setGrap(QGraphicsView* view);
 	void setNameLbl(QString name);
+
+protected:
+    virtual void mouseReleaseEvent(QMouseEvent* ev);  // 声明鼠标左键点击事件
+
+signals:
+    void clicked(void); // 声明鼠标左击中信号
 
 private:
     Ui::AdminMainWidget *ui;

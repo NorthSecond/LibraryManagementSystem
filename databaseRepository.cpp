@@ -120,6 +120,19 @@ ConnectionInfo DatabaseRepository::get_connection_info(unsigned long long user_i
 	}
 }
 
+bool DatabaseRepository::change_admin_passwd(unsigned long long admin_id, QString new_passwd)
+{
+	QString query = "UPDATE admininfo SET passwd = \'" + new_passwd + "\' WHERE admin_id = " + QString::number(admin_id);
+	QSqlQuery sql_query;
+	return sql_query.exec(query);
+}
+
+bool DatabaseRepository::update_admin_info(AdminInfo info)
+{
+	// TODO
+	return false;
+}
+
 bool check_username_usable(QString user_name){
     QString query = "SELECT user_id FROM user WHERE user_name = '" + user_name + "';";
     QSqlQuery sql_query;

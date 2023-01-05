@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>272</width>
+    <width>290</width>
     <height>262</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <widget class="QLineEdit" name="phone_edt">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>130</x>
      <y>170</y>
      <width>130</width>
      <height>24</height>
@@ -26,7 +26,7 @@
   <widget class="QLineEdit" name="id_edt">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>130</x>
      <y>10</y>
      <width>130</width>
      <height>24</height>
@@ -39,7 +39,7 @@
   <widget class="QLineEdit" name="new_passwd_wdt">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>130</x>
      <y>130</y>
      <width>130</width>
      <height>24</height>
@@ -52,9 +52,9 @@
   <widget class="QLabel" name="passwd_lbl">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>90</y>
-     <width>90</width>
+     <width>100</width>
      <height>20</height>
     </rect>
    </property>
@@ -74,7 +74,7 @@
   <widget class="QPushButton" name="back_btn">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>160</x>
      <y>220</y>
      <width>93</width>
      <height>29</height>
@@ -93,9 +93,9 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>170</y>
-     <width>90</width>
+     <width>100</width>
      <height>20</height>
     </rect>
    </property>
@@ -115,7 +115,7 @@
   <widget class="QLineEdit" name="user_name_edt">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>130</x>
      <y>50</y>
      <width>130</width>
      <height>24</height>
@@ -128,9 +128,9 @@
   <widget class="QLabel" name="passwd_again_lbl">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>130</y>
-     <width>90</width>
+     <width>100</width>
      <height>20</height>
     </rect>
    </property>
@@ -150,9 +150,9 @@
   <widget class="QLabel" name="id_lbl">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>10</y>
-     <width>90</width>
+     <width>100</width>
      <height>20</height>
     </rect>
    </property>
@@ -172,7 +172,7 @@
   <widget class="QLineEdit" name="passwd_edt">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>130</x>
      <y>90</y>
      <width>130</width>
      <height>24</height>
@@ -185,9 +185,9 @@
   <widget class="QLabel" name="username_lbl">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>50</y>
-     <width>90</width>
+     <width>100</width>
      <height>20</height>
     </rect>
    </property>
@@ -207,7 +207,7 @@
   <widget class="QPushButton" name="save_btn">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>220</y>
      <width>93</width>
      <height>29</height>

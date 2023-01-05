@@ -23,7 +23,9 @@ public:
 
 	AdminInfo get_admin_info(unsigned long long admin_id);
 	ConnectionInfo get_connection_info(unsigned long long user_id);
-    
+	bool change_admin_passwd(unsigned long long admin_id, QString new_passwd);
+    bool update_admin_info(AdminInfo info);
+
     unsigned long long addBookInfo(LibraryBookInfo::Book book);
     unsigned long long addBook(LibraryBookInfo::Book book, LibraryBookInfo::bookStatus status);
     bool changeBookStatus(unsigned long long book_index, LibraryBookInfo::bookStatus status);

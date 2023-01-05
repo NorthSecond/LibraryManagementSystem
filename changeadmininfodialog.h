@@ -2,6 +2,9 @@
 
 #include <QDialog>
 
+#include "userinfo.h"
+#include "databaseRepository.h"
+
 namespace Ui {
 class changeAdminInfoDialog;
 }
@@ -16,5 +19,13 @@ public:
 
 private:
     Ui::changeAdminInfoDialog *ui;
+    AdminInfo admin_info;
+
+public slots:
+	void getAdminInfo(AdminInfo info);
+
+private slots:
+    void commit_change();
+    void back_btn_clicked();
 };
 
