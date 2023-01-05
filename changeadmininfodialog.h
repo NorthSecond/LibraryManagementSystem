@@ -21,6 +21,9 @@ private:
     Ui::changeAdminInfoDialog *ui;
     AdminInfo admin_info;
 
+signals:
+	void close_signal();
+    
 public slots:
 	void getAdminInfo(AdminInfo info);
 

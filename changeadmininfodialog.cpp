@@ -7,10 +7,13 @@ changeAdminInfoDialog::changeAdminInfoDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     
+	connect(ui->save_btn, SIGNAL(clicked()), this, SLOT(commit_change()));
+	connect(ui->back_btn, SIGNAL(clicked()), this, SLOT(back_btn_clicked()));
 }
 
 changeAdminInfoDialog::~changeAdminInfoDialog()
 {
+	emit close_signal();
     delete ui;
 }
 

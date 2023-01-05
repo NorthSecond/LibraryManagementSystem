@@ -39,10 +39,16 @@ void AdminWindow::getUserInfo(unsigned long long id)
 	this->ui->username_lbl->setText(admin_info.get_admin_name());
 }
 
+void AdminWindow::flush() {
+	admin_info = db_repo->get_admin_info(id);
+	this->ui->username_lbl->setText(admin_info.get_admin_name());
+}
+
 void AdminWindow::on_change_btn_clicked()
 {
 	QDialog* change_dialog = new changeAdminInfoDialog(this);
 	connect(this, SIGNAL(sendAdminInfo(AdminInfo)), change_dialog, SLOT(getAdminInfo(AdminInfo)));
+	connect(change_dialog, SIGNAL(close_signal()), this, SLOT(flush()));
 	emit sendAdminInfo(admin_info);
 	change_dialog->show();
 }

@@ -291,7 +291,7 @@
     <string>新 建</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="change_btn">
    <property name="geometry">
     <rect>
      <x>490</x>
@@ -310,7 +310,7 @@
     <string>保 存</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="del_btn">
    <property name="geometry">
     <rect>
      <x>370</x>
@@ -329,7 +329,7 @@
     <string>删 除</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_4">
+  <widget class="QPushButton" name="back_btn">
    <property name="geometry">
     <rect>
      <x>490</x>
@@ -348,13 +348,13 @@
     <string>返 回</string>
    </property>
   </widget>
-  <widget class="QTableWidget" name="tableWidget">
+  <widget class="QTableView" name="acc_tbl">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>341</width>
-     <height>331</height>
+     <width>331</width>
+     <height>321</height>
     </rect>
    </property>
   </widget>

@@ -38,6 +38,7 @@ signals:
 
 public slots:
     void getUserInfo(unsigned long long id);
+	void flush();
 
 private slots:
     void on_change_btn_clicked();

@@ -129,8 +129,121 @@ bool DatabaseRepository::change_admin_passwd(unsigned long long admin_id, QStrin
 
 bool DatabaseRepository::update_admin_info(AdminInfo info)
 {
-	// TODO
-	return false;
+	QString query = "UPDATE connection_info SET telephone = \' " + info.get_connection_info().get_telephone()
+		+ "\' WHERE id = " + QString::number(info.get_connection_info().get_connection_id());
+	QSqlQuery sql_query;
+	return sql_query.exec(query);
+}
+
+QVector<UserInfo> DatabaseRepository::get_user_list()
+{
+	QString query = "SELECT * FROM reader_info";
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	QVector<UserInfo> user_list;
+	while (sql_query.next()) {
+		unsigned long long connection_id = sql_query.value(3).toULongLong();
+		ConnectionInfo connection_info = get_connection_info(connection_id);
+		User::Role role;
+		if (sql_query.value(4) == "学生") {
+			role == User::STUDENT;
+		}
+		else if (sql_query.value(4) == "教师") {
+			role = User::TEACHER;
+		}
+		else if (sql_query.value(4) == "外来") {
+			role = User::OUTCOME;
+		}
+		User::Status status;
+		if (sql_query.value(5) == "正常") {
+			status = User::Normal;
+		}
+		else {
+			status = User::Banned;
+		}
+		user_list.push_back(UserInfo(sql_query.value(0).toULongLong(), sql_query.value(2).toString(), role, status, connection_info));
+	}
+	return user_list;
+}
+
+bool DatabaseRepository::add_user(UserInfo info) 
+{
+	ConnectionInfo connection_info = info.get_connection_info();
+	// insert connect first
+	QString sql = "INSERT INTO connection_info (telephone) VALUES (\'" + connection_info.get_telephone() +  "\')";
+	QSqlQuery sql_query;
+	if (!sql_query.exec(sql)) {
+		return false;
+	}
+	
+	sql = "SELECT id FROM connection_info WHERE telephone = \'" + connection_info.get_telephone() + "\'";
+	if (!sql_query.exec(sql)) {
+		return false;
+	}
+	unsigned long long conn_id;
+	while (sql_query.next())
+	{
+		conn_id = sql_query.value(0).toULongLong();
+	}
+	
+	QString status = info.get_user_status() == User::Normal ? "正常" : "禁用";
+	QString role = info.get_user_role() == User::TEACHER ? "教师" : info.get_user_role() == User::STUDENT ? "学生" : "外来";
+	// insert account
+	sql = "INSERT INTO reader_info (passwd, reader_name, connect_info, reader_type, reader_status, borrowed_num) VALUES (\'\', \'"
+		+ info.get_user_name() + "\', " + QString::number(conn_id) + ", \'" + role + "\', \'" + status + "\', 0)";
+	return sql_query.exec(sql);
+}
+
+UserInfo DatabaseRepository::get_user(unsigned long long user_id) 
+{
+	QString query = "SELECT * FROM reader_info WHERE reader_id = " + QString::number(user_id);
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	UserInfo res;
+	if (sql_query.next()) {
+		unsigned long long connection_id = sql_query.value(3).toULongLong();
+		ConnectionInfo connection_info = get_connection_info(connection_id);
+		User::Role role;
+		if (sql_query.value(4) == "学生") {
+			role == User::STUDENT;
+		}
+		else if (sql_query.value(4) == "教师") {
+			role = User::TEACHER;
+		}
+		else if (sql_query.value(4) == "外来") {
+			role = User::OUTCOME;
+		}
+		User::Status status;
+		if (sql_query.value(5) == "正常") {
+			status = User::Normal;
+		}
+		else {
+			status = User::Banned;
+		}
+		res = UserInfo(sql_query.value(0).toULongLong(), sql_query.value(2).toString(), role, status, connection_info);
+	}
+	return res;
+}
+
+bool DatabaseRepository::update_user(UserInfo info) {
+	ConnectionInfo conn = info.get_connection_info();
+	QString query = "UPDATE connection_info SET telephone = \' " + info.get_connection_info().get_telephone()
+		+ "\' WHERE id = " + QString::number(info.get_connection_info().get_connection_id());
+	QSqlQuery sql_query;
+	if (!sql_query.exec(query)) {
+		return false;
+	}
+	query = "UPDATE reader_info SET reader_name = \'" + info.get_user_name() + "\', reader_type = \'" +
+		(info.get_user_role() == User::TEACHER ? "教师" : info.get_user_role() == User::STUDENT ? "学生" : "外来") + "\', reader_status = \'" +
+		(info.get_user_status() == User::Normal ? "正常" : "禁用") + "\' WHERE reader_id = " + QString::number(info.get_user_id());
+	return sql_query.exec(query);
+}
+
+bool DatabaseRepository::delete_user(unsigned long long user_id)
+{
+	QString sql = "DELETE FROM reader_info WHERE reader_id = " + QString::number(user_id);
+	QSqlQuery sql_query;
+	return sql_query.exec(sql);
 }
 
 bool check_username_usable(QString user_name){

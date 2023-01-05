@@ -22,6 +22,11 @@ ConnectionInfo::ConnectionInfo(unsigned long long connection_id, QString telepho
 	this->telephone = telephone;
 }
 
+ConnectionInfo::ConnectionInfo(QString telephone)
+{
+	this->telephone = telephone;
+}
+
 ConnectionInfo::ConnectionInfo()
 {
 }

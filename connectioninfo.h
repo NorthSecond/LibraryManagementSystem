@@ -15,6 +15,7 @@ public:
 	ConnectionInfo(QString telephone, QString email, QString address, QString postcode);
 	ConnectionInfo(unsigned long long connection_id);
 	ConnectionInfo(unsigned long long connection_id, QString telephone);
+	ConnectionInfo(QString telephone);
 	ConnectionInfo();
 	//bool commitToDB();
 	

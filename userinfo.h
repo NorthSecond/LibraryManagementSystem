@@ -11,7 +11,7 @@ namespace User{
 
     enum Status{
         Normal,
-        Exhausted,
+        //Exhausted,
         Banned
     };
 
@@ -21,13 +21,22 @@ class UserInfo
 {
 private:
     unsigned long long user_id;
+	QString user_name;
     User::Role user_role;
     User::Status user_status;
     unsigned int borrowed_num;
 	ConnectionInfo connection_info;
 public:
-    UserInfo(unsigned long long user_id, User::Role user_role, User::Status user_status, ConnectionInfo conn);
+    UserInfo(unsigned long long user_id, QString user_name, User::Role user_role, User::Status user_status, ConnectionInfo conn);
     UserInfo();
+
+	unsigned long long get_user_id();
+	QString get_user_name();
+	User::Role get_user_role();
+	User::Status get_user_status();
+	unsigned int get_borrowed_num();
+	ConnectionInfo get_connection_info();
+	
 };
 
 class AdminInfo

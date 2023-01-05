@@ -1,8 +1,9 @@
 #include "userinfo.h"
 
-UserInfo::UserInfo(unsigned long long user_id, User::Role user_role, User::Status user_status, ConnectionInfo conn)
+UserInfo::UserInfo(unsigned long long user_id, QString user_name, User::Role user_role, User::Status user_status, ConnectionInfo conn)
 {
 	this->user_id = user_id;
+	this->user_name = user_name;
 	this->user_role = user_role;
 	this->user_status = user_status;
 	this->connection_info = conn;
@@ -14,6 +15,36 @@ UserInfo::UserInfo()
 	this->user_role = User::OUTCOME;
 	this->user_status = User::Normal;
 	this->connection_info = ConnectionInfo();
+}
+
+unsigned long long UserInfo::get_user_id()
+{
+	return this->user_id;
+}
+
+QString UserInfo::get_user_name()
+{
+	return this->user_name;
+}
+
+User::Role UserInfo::get_user_role()
+{
+	return this->user_role;
+}
+
+User::Status UserInfo::get_user_status()
+{
+	return this->user_status;
+}
+
+unsigned int UserInfo::get_borrowed_num()
+{
+	return this->borrowed_num;
+}
+
+ConnectionInfo UserInfo::get_connection_info()
+{
+	return this->connection_info;
 }
 
 AdminInfo::AdminInfo(unsigned long long admin_id, QString admin_name, ConnectionInfo connection_info, QString post_info, QString work_status)
