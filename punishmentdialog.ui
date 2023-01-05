@@ -29,7 +29,7 @@
     </font>
    </property>
    <property name="text">
-    <string>请输入用户名：</string>
+    <string>请输入用户id：</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="uname_edt">

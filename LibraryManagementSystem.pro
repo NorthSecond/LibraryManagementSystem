@@ -19,6 +19,7 @@ SOURCES += \
     databaseRepository.cpp \
     main.cpp \
     mainwindow.cpp \
+    punishinfo.cpp \
     punishmentdialog.cpp \
     readeraccountdialog.cpp \
     userinfo.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     changeadmininfodialog.h \
     databaseRepository.h \
     mainwindow.h \
+    punishinfo.h \
     punishmentdialog.h \
     readeraccountdialog.h \
     userinfo.h \

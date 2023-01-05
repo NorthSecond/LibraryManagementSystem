@@ -325,6 +325,38 @@ unsigned long long DatabaseRepository::return_book(unsigned long long book_id){
 //    return (User::Status)sql_query.value(0).toUInt();
 //}
 
+QVector<PunishInfo> DatabaseRepository::get_punish_info(unsigned long long user_id)
+{
+	QVector<PunishInfo> res;
+	QString query = "SELECT * FROM violate_info WHERE reader_id = " + QString::number(user_id);
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	while (sql_query.next()) {
+		res.push_back(PunishInfo(sql_query.value(0).toULongLong(), sql_query.value(1).toULongLong(), sql_query.value(2).toULongLong(),
+			sql_query.value(3).toDateTime(), sql_query.value(4).toInt(), sql_query.value(5).toInt()));
+	}
+	
+	return res;
+}
+
+bool DatabaseRepository::punish(unsigned long long id, unsigned long long user_id)
+{
+	// 使用事务同步更新状态
+	if (QSqlDatabase::database().transaction()) //启动事务操作
+	{
+		QSqlQuery query;
+		query.exec("UPDATE violate_info SET status = 1 WHERE id = " + QString::number(id));
+		query.exec("UPDATE reader_info SET reader_status = \'正常\' where reader_id = " + QString::number(user_id));
+		if (!QSqlDatabase::database().commit())
+		{
+			if (!QSqlDatabase::database().rollback()) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 //void flush_all_status(){
 
 //}

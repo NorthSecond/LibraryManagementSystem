@@ -8,6 +8,7 @@
 #include "userinfo.h"
 #include "bookinfo.h"
 #include "connectioninfo.h"
+#include "punishinfo.h"
 
 class DatabaseRepository
 {
@@ -43,6 +44,9 @@ public:
     unsigned long long  borrow_book(unsigned long long user_id, unsigned long long book_index, unsigned long long admin_id = 0);
     unsigned long long return_book(unsigned long long book_id);
 
+	QVector<PunishInfo> get_punish_info(unsigned long long uid);
+    bool punish(unsigned long long id, unsigned long long user_id);
+    
     ~DatabaseRepository();
 };
 
