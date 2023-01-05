@@ -246,6 +246,29 @@ bool DatabaseRepository::delete_user(unsigned long long user_id)
 	return sql_query.exec(sql);
 }
 
+QVector<BookInfoBrief> DatabaseRepository::searchBookBrief(unsigned long long book_id)
+{
+	// natural join to find the book_name
+	QVector<BookInfoBrief> res;
+	QString query = "SELECT book_index, book_ISBN, book_name, book_status FROM book_info NATURAL JOIN book WHERE book_id = " + QString::number(book_id);
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	while (sql_query.next()) {
+		LibraryBookInfo::bookStatus status;
+		if (sql_query.value(3).toString() == "在架上") {
+			status = LibraryBookInfo::onShelf;
+		}
+		else if (sql_query.value(3).toString() == "借出") {
+			status = LibraryBookInfo::Borrowed;
+		}
+		else {
+			status = LibraryBookInfo::Wartung;
+		}
+		res.push_back(BookInfoBrief(sql_query.value(0).toULongLong(), sql_query.value(1).toString(), sql_query.value(2).toString(), status));
+	}
+	return res;
+}
+
 bool check_username_usable(QString user_name){
     QString query = "SELECT user_id FROM user WHERE user_name = '" + user_name + "';";
     QSqlQuery sql_query;
@@ -261,12 +284,58 @@ bool check_username_usable(QString user_name){
     return true;
 }
 
-unsigned long long DatabaseRepository::borrow_book(unsigned long long user_id, unsigned long long book_index, unsigned long long admin_id){
+bool DatabaseRepository::borrow_book(unsigned long long user_id, unsigned long long book_index, unsigned long long admin_id){
 	return 0;
 }
 
-unsigned long long DatabaseRepository::return_book(unsigned long long book_id){
-	return 0;
+bool DatabaseRepository::rtn_book(unsigned long long book_id){
+	// 使用事务同步更新状态
+	if (QSqlDatabase::database().transaction()) //启动事务操作
+	{
+		QSqlQuery query;
+		query.exec("UPDATE book SET book_status = '在架上' WHERE book_id = " + QString::number(book_id));
+		// 找到借阅记录进行归还
+		query.exec("set @log_id = 0;");
+		query.exec("set @reader_id = 0;");
+		query.exec("SELECT (id into @log_id, reader_id into @reader_id) FROM lend_log WHERE book_index = " + QString::number(book_id) + " SORT BY lend_time DESC LIMIT 1;");
+		// 用户借阅数量-1
+		query.exec("UPDATE reader_info SET borrowed_num = borrowed_num - 1 WHERE reader_id = @reader_id");
+		// 写入归还记录
+		query.exec("INSERT INTO lend_return_info (lend_id, return_time) VALUES (@log_id, " + QDateTime().toString("yyyy-MM-dd hh:mm:ss") + ");");
+		
+		if (!QSqlDatabase::database().commit())
+		{
+			if (!QSqlDatabase::database().rollback()) {
+				return false;
+			}
+		}
+	}
+}
+
+bool DatabaseRepository::break_book(unsigned long long book_id) {
+	// 使用事务同步更新状态
+	if (QSqlDatabase::database().transaction()) //启动事务操作
+	{
+		QSqlQuery query;
+		query.exec("UPDATE book SET book_status = '损毁' WHERE book_id = " + QString::number(book_id));
+		// 找到借阅记录进行归还
+		query.exec("set @log_id = 0;");
+		query.exec("set @reader_id = 0;");
+		query.exec("SELECT (id into @log_id, reader_id into @reader_id) FROM lend_log WHERE book_index = " + QString::number(book_id) + " SORT BY lend_time DESC LIMIT 1;");
+		// 用户借阅数量-1
+		query.exec("UPDATE reader_info SET borrowed_num = borrowed_num - 1 WHERE reader_id = @reader_id");
+		// 写入惩罚记录
+		query.exec("INSERT INTO violate_info SET (book_index, reader_id, banned_time, type_id, status) VALUES ("
+			+ QString::number(book_id) + ", @reader_id, " + QDateTime().toString("yyyy-MM-dd hh:mm:ss") + ", 0, 2);");
+		// 用户被限制
+		query.exec("UPDATE reader_info SET reader_status = \'受限\' WHERE reader_id = @reader_id");
+		if (!QSqlDatabase::database().commit())
+		{
+			if (!QSqlDatabase::database().rollback()) {
+				return false;
+			}
+		}
+	}
 }
 
 //LibraryBookInfo::Book find_book_from_ISBN(QString ISBN){

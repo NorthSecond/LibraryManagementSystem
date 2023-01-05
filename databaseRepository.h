@@ -2,6 +2,7 @@
 
 #include <QSqlDatabase>
 #include <QMessageBox>
+#include <QDatetime>
 #include <QSqlQuery>
 #include <QVector>
 
@@ -34,15 +35,16 @@ public:
 	bool update_user(UserInfo info);
 	bool delete_user(unsigned long long user_id);
 
-    
+	QVector<BookInfoBrief> searchBookBrief(unsigned long long book_id);
     unsigned long long addBookInfo(LibraryBookInfo::Book book);
     unsigned long long addBook(LibraryBookInfo::Book book, LibraryBookInfo::bookStatus status);
     bool changeBookStatus(unsigned long long book_index, LibraryBookInfo::bookStatus status);
     bool deleteBook(unsigned long long book_index);
     
 
-    unsigned long long  borrow_book(unsigned long long user_id, unsigned long long book_index, unsigned long long admin_id = 0);
-    unsigned long long return_book(unsigned long long book_id);
+    bool borrow_book(unsigned long long user_id, unsigned long long book_index, unsigned long long admin_id = 0);
+    bool rtn_book(unsigned long long book_id);
+    bool break_book(unsigned long long book_id);
 
 	QVector<PunishInfo> get_punish_info(unsigned long long uid);
     bool punish(unsigned long long id, unsigned long long user_id);

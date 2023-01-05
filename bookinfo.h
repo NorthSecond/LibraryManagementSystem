@@ -44,8 +44,6 @@ namespace LibraryBookInfo {
         QString get_language_info();
         QString get_book_version();
         QString get_book_brief();
-
-        bool show();
     };
 }
 
@@ -58,7 +56,20 @@ public:
     BookInfo(LibraryBookInfo::Book book);
     BookInfo(QString ISBN);
     LibraryBookInfo::Book get_book();
+};
 
-    bool borrowBook();
-    bool returnBook();
+class BookInfoBrief 
+{
+    unsigned long long book_index;
+    QString ISBN;
+	QString book_name;
+    LibraryBookInfo::bookStatus status;
+
+public:
+	BookInfoBrief(unsigned long long book_index, QString ISBN, QString book_name, LibraryBookInfo::bookStatus status);
+	BookInfoBrief(QString ISBN);
+	unsigned long long get_book_index();
+	QString get_ISBN();
+	QString get_book_name();
+	LibraryBookInfo::bookStatus get_book_status();
 };
