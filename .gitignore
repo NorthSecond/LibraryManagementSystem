@@ -76,3 +76,6 @@ debug/*
 release/*
 utils/*
 .vs/*
+
+# CLion 
+.idea/*

@@ -13,9 +13,14 @@ SOURCES += \
     adminmainwidget.cpp \
     adminwindow.cpp \
     bookinfo.cpp \
+    bookmanagementdialog.cpp \
+    bookrtndialog.cpp \
+    changeadmininfodialog.cpp \
     databaseRepository.cpp \
     main.cpp \
     mainwindow.cpp \
+    punishmentdialog.cpp \
+    readeraccountdialog.cpp \
     userinfo.cpp \
     usermainwindow.cpp \
     utils/sm3_hash.cpp \
@@ -26,8 +31,13 @@ HEADERS += \
     adminmainwidget.h \
     adminwindow.h \
     bookinfo.h \
+    bookmanagementdialog.h \
+    bookrtndialog.h \
+    changeadmininfodialog.h \
     databaseRepository.h \
     mainwindow.h \
+    punishmentdialog.h \
+    readeraccountdialog.h \
     userinfo.h \
     usermainwindow.h \
     utils/sm3_hash.h \
@@ -37,5 +47,10 @@ HEADERS += \
 FORMS += \
     adminmainwidget.ui \
     adminwindow.ui \
+    bookmanagementdialog.ui \
+    bookrtndialog.ui \
+    changeadmininfodialog.ui \
     mainwindow.ui \
+    punishmentdialog.ui \
+    readeraccountdialog.ui \
     usermainwindow.ui
