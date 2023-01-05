@@ -14,6 +14,7 @@
 #include "databaseRepository.h"
 #include "ui_mainwindow.h"
 #include "adminwindow.h"
+#include "usermainwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

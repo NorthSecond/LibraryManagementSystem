@@ -138,7 +138,12 @@ void MainWindow::login_btn_pushed()
 				emit sendLoginInfo(login_res);
 			}
 			else {
+				QMainWindow* userWid = new userMainWindow(this);
+				connect(this, SIGNAL(sendLoginInfo(unsigned long long)),
+					userWid, SLOT(getLoginInfo(unsigned long long)));
 				emit sendLoginInfo(login_res);
+				userWid->show();
+				this->hide();
 			}
 		}
 		else {

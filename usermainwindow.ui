@@ -49,7 +49,7 @@
      <string>当前状态：</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="stat_lbl">
     <property name="geometry">
      <rect>
       <x>480</x>
@@ -68,7 +68,7 @@
      <string>可借阅</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="man_btn">
     <property name="geometry">
      <rect>
       <x>430</x>
@@ -106,7 +106,7 @@
      <string>ISBN：</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="ISBN_edt">
     <property name="geometry">
      <rect>
       <x>440</x>
@@ -141,7 +141,7 @@
      <string>书名：</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="name_edt">
     <property name="geometry">
      <rect>
       <x>440</x>
@@ -157,7 +157,7 @@
      </font>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="search_btn">
     <property name="geometry">
      <rect>
       <x>430</x>
@@ -176,7 +176,7 @@
      <string>查  询</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="borrow_btn">
     <property name="geometry">
      <rect>
       <x>430</x>
