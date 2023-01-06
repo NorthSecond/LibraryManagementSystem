@@ -8,6 +8,7 @@
 #include "bookinfo.h"
 #include "databaseRepository.h"
 #include "userinfo.h"
+#include "manuserdialog.h"
 
 namespace Ui {
 class userMainWindow;
@@ -29,6 +30,9 @@ private:
 	QVector<BookInfo> infos;
 	QStandardItemModel* mod;
 
+signals:
+	void sendUserInfo(UserInfo);
+	
 public slots:
 	void getLoginInfo(unsigned long long id);
 

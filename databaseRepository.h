@@ -34,6 +34,7 @@ public:
 	UserInfo get_user(unsigned long long user_id);
 	bool update_user(UserInfo info);
 	bool delete_user(unsigned long long user_id);
+	bool change_user_pwd(unsigned long long user_id, QString new_passwd);
 
 	QVector<BookInfoBrief> searchBookBrief(unsigned long long book_id);
     

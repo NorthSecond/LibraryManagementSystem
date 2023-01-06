@@ -14,6 +14,7 @@ CONFIG += c++17
 SOURCES += \
     adminmainwidget.cpp \
     adminwindow.cpp \
+    authormanagementdialog.cpp \
     bookinfo.cpp \
     bookmanagementdialog.cpp \
     bookrtndialog.cpp \
@@ -21,6 +22,8 @@ SOURCES += \
     databaseRepository.cpp \
     main.cpp \
     mainwindow.cpp \
+    manuserdialog.cpp \
+    pressmanagementdialog.cpp \
     punishinfo.cpp \
     punishmentdialog.cpp \
     readeraccountdialog.cpp \
@@ -33,12 +36,15 @@ SOURCES += \
 HEADERS += \
     adminmainwidget.h \
     adminwindow.h \
+    authormanagementdialog.h \
     bookinfo.h \
     bookmanagementdialog.h \
     bookrtndialog.h \
     changeadmininfodialog.h \
     databaseRepository.h \
     mainwindow.h \
+    manuserdialog.h \
+    pressmanagementdialog.h \
     punishinfo.h \
     punishmentdialog.h \
     readeraccountdialog.h \
@@ -51,10 +57,13 @@ HEADERS += \
 FORMS += \
     adminmainwidget.ui \
     adminwindow.ui \
+    authormanagementdialog.ui \
     bookmanagementdialog.ui \
     bookrtndialog.ui \
     changeadmininfodialog.ui \
     mainwindow.ui \
+    manuserdialog.ui \
+    pressmanagementdialog.ui \
     punishmentdialog.ui \
     readeraccountdialog.ui \
     usermainwindow.ui

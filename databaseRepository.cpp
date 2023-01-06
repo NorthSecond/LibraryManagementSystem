@@ -250,6 +250,13 @@ bool DatabaseRepository::delete_user(unsigned long long user_id)
 	return sql_query.exec(sql);
 }
 
+bool DatabaseRepository::change_user_pwd(unsigned long long user_id, QString new_passwd)
+{
+	QString sql = "UPDATE reader_info SET passwd = \'" + new_passwd + "\' WHERE reader_id = " + QString::number(user_id);
+	QSqlQuery sql_query;
+	return sql_query.exec(sql);
+}
+
 QVector<BookInfoBrief> DatabaseRepository::searchBookBrief(unsigned long long book_id)
 {
 	// natural join to find the book_name

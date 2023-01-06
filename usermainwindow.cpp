@@ -30,6 +30,7 @@ userMainWindow::userMainWindow(QWidget *parent) :
 	connect(ui->search_btn, SIGNAL(clicked()), this, SLOT(on_search_btn_clicked()));
 	connect(ui->borrow_btn, SIGNAL(clicked()), this, SLOT(on_borrow_btn_clicked()));
 	connect(ui->pushButton_4, SIGNAL(clicked()), this, SLOT(on_exit_btn_clicked()));
+	connect(ui->man_btn, SIGNAL(clicked()), this, SLOT(on_man_btn_clicked()));
 }
 
 userMainWindow::~userMainWindow()
@@ -46,7 +47,21 @@ void userMainWindow::getLoginInfo(unsigned long long id)
 }
 
 void userMainWindow::on_man_btn_clicked() {
-    
+	ManUserDialog* manUserDialog = new ManUserDialog(this);
+	connect(this, SIGNAL(sendUserInfo(UserInfo)), manUserDialog, SLOT(getLoginInfo(UserInfo)));
+	emit sendUserInfo(user_info);
+
+	auto reply = manUserDialog->exec();
+	if (reply == QDialog::Accepted) {
+		// 更改密码
+		unsigned long long id = user_info.get_user_id();
+		QString new_pwd = manUserDialog->get_new_passwd();
+		if (new_pwd == "") {
+			QMessageBox::warning(this, "警告", "请输入两次不为空的相同密码");
+			return;
+		}
+		db_repo->change_user_pwd(id, new_pwd);
+	}
 }
 
 void userMainWindow::on_search_btn_clicked()
