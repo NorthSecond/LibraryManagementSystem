@@ -25,6 +25,7 @@ namespace LibraryBookInfo {
 		unsigned long long get_press_id();
 		QString get_name();
 
+		void set_press_id(unsigned long long press_id);
 		void set_name(QString name);
 	};
 
@@ -40,6 +41,7 @@ namespace LibraryBookInfo {
 		unsigned long long get_author_id();
 		QString get_name();
 
+		void set_author_id(unsigned long long author_id);
 		void set_name(QString name);
 	};
 
@@ -77,7 +79,7 @@ class BookInfo
 public:
 	BookInfo(unsigned long long book_index, LibraryBookInfo::Book book, LibraryBookInfo::bookStatus status);
 	BookInfo(LibraryBookInfo::Book book);
-	//BookInfo(QString ISBN);
+	BookInfo();
 
 	LibraryBookInfo::Book get_book();
 	unsigned long long get_book_index();

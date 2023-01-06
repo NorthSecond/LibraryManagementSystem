@@ -105,22 +105,6 @@
     <string>查  询</string>
    </property>
   </widget>
-  <widget class="QTableWidget" name="book_table">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>240</y>
-     <width>491</width>
-     <height>151</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>思源黑体</family>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-  </widget>
   <widget class="QPushButton" name="new_book_btn">
    <property name="geometry">
     <rect>
@@ -484,6 +468,16 @@
    </property>
    <property name="text">
     <string>保  存</string>
+   </property>
+  </widget>
+  <widget class="QTableView" name="tableView">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>240</y>
+     <width>491</width>
+     <height>151</height>
+    </rect>
    </property>
   </widget>
  </widget>

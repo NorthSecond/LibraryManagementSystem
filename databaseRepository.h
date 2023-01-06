@@ -43,9 +43,14 @@ public:
 	QVector<BookInfo> get_books_by_ISBN(QString ISBN);
 	QVector<BookInfo> get_books_by_name(QString book_name);
     
-    unsigned long long addBookInfo(LibraryBookInfo::Book book);
+	BookInfo get_book_by_index(unsigned long long book_index);
+    bool addBookInfo(LibraryBookInfo::Book book);
     unsigned long long addBook(LibraryBookInfo::Book book, LibraryBookInfo::bookStatus status);
     bool deleteBook(unsigned long long book_index);
+	bool modifyBook(unsigned long long book_index, LibraryBookInfo::bookStatus status);
+	unsigned long long add_author_info(LibraryBookInfo::AuthorInfo info);
+	unsigned long long add_press_info(LibraryBookInfo::PressInfo info); 
+	bool update_book_info(QString ISBN, LibraryBookInfo::Book book);
     
 	bool is_user_limited(unsigned long long user_id);
     bool borrow_book(unsigned long long user_id, unsigned long long book_index);

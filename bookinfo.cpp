@@ -22,6 +22,11 @@ QString LibraryBookInfo::PressInfo::get_name()
 	return name;
 }
 
+void LibraryBookInfo::PressInfo::set_press_id(unsigned long long press_id)
+{
+	this->press_id = press_id;
+}
+
 void LibraryBookInfo::PressInfo::set_name(QString name)
 {
 	this->name = name;
@@ -48,6 +53,11 @@ unsigned long long LibraryBookInfo::AuthorInfo::get_author_id()
 QString LibraryBookInfo::AuthorInfo::get_name()
 {
 	return name;
+}
+
+void LibraryBookInfo::AuthorInfo::set_author_id(unsigned long long author_id)
+{
+	this->author_id = author_id;
 }
 
 void LibraryBookInfo::AuthorInfo::set_name(QString name)
@@ -132,6 +142,12 @@ BookInfo::BookInfo(LibraryBookInfo::Book book)
 {
 	this->status = LibraryBookInfo::bookStatus::onShelf;
 
+}
+
+BookInfo::BookInfo()
+{
+	this->book_index = 0;
+	this->status = LibraryBookInfo::bookStatus::onShelf;
 }
 
 //BookInfo::BookInfo(QString ISBN)

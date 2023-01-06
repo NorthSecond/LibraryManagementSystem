@@ -308,27 +308,183 @@ LibraryBookInfo::Book DatabaseRepository::get_book_by_ISBN(QString ISBN) {
 
 QVector<BookInfo> DatabaseRepository::get_books_by_ISBN(QString ISBN)
 {
-	return QVector<BookInfo>();
+	QVector<BookInfo> res;
+	QString query = "SELECT book_index, book_ISBN, book_status, book_name, publish_info, author_info, language_info,"
+		" book_version, brief_intro FROM book_info INNER JOIN book ON book_info.book_ISBN = book.ISBN WHERE book_ISBN = \'" + ISBN + "\'";
+	
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	while (sql_query.next())
+	{
+		LibraryBookInfo::bookStatus status;
+		if (sql_query.value(2).toString() == "在架上") {
+			status = LibraryBookInfo::onShelf;
+		}
+		else if (sql_query.value(2).toString() == "借出") {
+			status = LibraryBookInfo::Borrowed;
+		}
+		else {
+			status = LibraryBookInfo::Wartung;
+		}
+		LibraryBookInfo::PressInfo press = get_press_by_id(sql_query.value(4).toULongLong());
+		LibraryBookInfo::AuthorInfo author = get_auth_by_id(sql_query.value(5).toULongLong());
+
+		LibraryBookInfo::Book book = LibraryBookInfo::Book(sql_query.value(1).toString(), sql_query.value(3).toString(), press, author,
+			sql_query.value(6).toString(), sql_query.value(7).toString(), sql_query.value(8).toString());
+
+		res.push_back(BookInfo(sql_query.value(0).toULongLong(), book, status));
+	}
+
+	return res;
 }
 
 QVector<BookInfo> DatabaseRepository::get_books_by_name(QString book_name)
 {
-	return QVector<BookInfo>();
+	QVector<BookInfo> res;
+	QString query = "SELECT book_index, book_ISBN, book_status, book_name, publish_info, author_info, language_info,"
+		" book_version, brief_intro FROM book_info INNER JOIN book ON book_info.book_ISBN = book.ISBN WHERE book_name = \'" + book_name + "\'";
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	while (sql_query.next())
+	{
+		LibraryBookInfo::bookStatus status;
+		if (sql_query.value(2).toString() == "在架上") {
+			status = LibraryBookInfo::onShelf;
+		}
+		else if (sql_query.value(2).toString() == "借出") {
+			status = LibraryBookInfo::Borrowed;
+		}
+		else {
+			status = LibraryBookInfo::Wartung;
+		}
+		LibraryBookInfo::PressInfo press = get_press_by_id(sql_query.value(4).toULongLong());
+		LibraryBookInfo::AuthorInfo author = get_auth_by_id(sql_query.value(5).toULongLong());
+
+		LibraryBookInfo::Book book = LibraryBookInfo::Book(sql_query.value(1).toString(), sql_query.value(3).toString(), press, author,
+			sql_query.value(6).toString(), sql_query.value(7).toString(), sql_query.value(8).toString());
+
+		res.push_back(BookInfo(sql_query.value(0).toULongLong(), book, status));
+	}
+	return res;
 }
 
-unsigned long long DatabaseRepository::addBookInfo(LibraryBookInfo::Book book)
+BookInfo DatabaseRepository::get_book_by_index(unsigned long long book_index)
 {
-	return 0;
+	BookInfo res;
+	QString query = "SELECT book_index, book_ISBN, book_status, book_name, publish_info, author_info, language_info,"
+		" book_version, brief_intro FROM book_info INNER JOIN book ON book_info.book_ISBN = book.ISBN WHERE book_index = " + QString::number(book_index);
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	if (sql_query.next())
+	{
+		LibraryBookInfo::bookStatus status;
+		if (sql_query.value(2).toString() == "在架上") {
+			status = LibraryBookInfo::onShelf;
+		}
+		else if (sql_query.value(2).toString() == "借出") {
+			status = LibraryBookInfo::Borrowed;
+		}
+		else {
+			status = LibraryBookInfo::Wartung;
+		}
+		LibraryBookInfo::PressInfo press = get_press_by_id(sql_query.value(4).toULongLong());
+		LibraryBookInfo::AuthorInfo author = get_auth_by_id(sql_query.value(5).toULongLong());
+
+		LibraryBookInfo::Book book = LibraryBookInfo::Book(sql_query.value(1).toString(), sql_query.value(3).toString(), press, author,
+			sql_query.value(6).toString(), sql_query.value(7).toString(), sql_query.value(8).toString());
+
+		res = BookInfo(sql_query.value(0).toULongLong(), book, status);
+	}
+}
+
+bool DatabaseRepository::addBookInfo(LibraryBookInfo::Book book)
+{
+	QString query = "INSERT INTO book (ISBN, book_name, publish_info, author_info, language_info, book_version, brief_intro) VALUES (\'"
+		+ book.get_ISBN() + "\', \'" + book.get_book_name() + "\', " + QString::number(book.get_press_id()) + ", " + QString::number(book.get_author_id()) + 
+		", \'" + book.get_language_info() + "\', \'" + book.get_book_version() + "\', \'" + book.get_book_brief() + "\')";
+	QSqlQuery sql_query;
+	return sql_query.exec(query);	
 }
 
 unsigned long long DatabaseRepository::addBook(LibraryBookInfo::Book book, LibraryBookInfo::bookStatus status)
 {
+	QString status_str = status == LibraryBookInfo::onShelf ? "在架上" :
+		status == LibraryBookInfo::Borrowed ? "借出" : "损毁";
+	QString query = "INSERT INTO book_info (book_ISBN, book_status) VALUES (\'"
+		+ book.get_ISBN() + "\', \'" + status_str + "\')";
+	QSqlQuery sql_query;
+	if (!sql_query.exec(query)) {
+		return 0;
+	}
+	query = "SELECT book_index FROM book_info WHERE book_ISBN = \'" + book.get_ISBN() + "\'";
+	sql_query.exec(query);
+	if (sql_query.next()) {
+		return sql_query.value(0).toULongLong();
+	}
 	return 0;
 }
 
 bool DatabaseRepository::deleteBook(unsigned long long book_index)
 {
-	return false;
+	QString query = "DELETE FROM book_info WHERE book_index = " + QString::number(book_index);
+	QSqlQuery sql_query;
+	return sql_query.exec(query);
+}
+
+bool DatabaseRepository::modifyBook(unsigned long long book_index, LibraryBookInfo::bookStatus status)
+{
+	QString status_str = status == LibraryBookInfo::onShelf ? "在架上" :
+		status == LibraryBookInfo::Borrowed ? "借出" : "损毁";
+	QString query = "UPDATE book_info SET book_status = \'" + status_str + "\' WHERE book_index = " + QString::number(book_index);
+	QSqlQuery sql_query;
+	return sql_query.exec(query);
+}
+
+unsigned long long DatabaseRepository::add_author_info(LibraryBookInfo::AuthorInfo info)
+{
+	// 先判断是否已经存在
+	QString query = "SELECT author_index FROM author_info WHERE author_name = \'" + info.get_name() + "\'";
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	if (sql_query.next()) {
+		return sql_query.value(0).toULongLong();
+	}
+	query = "INSERT INTO author_info author_name VALUES (\'" + info.get_name() + "\')";
+	sql_query.exec(query);
+	query = "SELECT author_index FROM author_info WHERE author_name = \'" + info.get_name() + "\'";
+	sql_query.exec(query);
+	if (sql_query.next()) {
+		return sql_query.value(0).toULongLong();
+	}
+	return 0;
+}
+
+unsigned long long DatabaseRepository::add_press_info(LibraryBookInfo::PressInfo info)
+{
+	// 先判断是否已经存在
+	QString query = "SELECT press_index FROM press_info WHERE press_name = \'" + info.get_name() + "\'";
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	if (sql_query.next()) {
+		return sql_query.value(0).toULongLong();
+	}
+
+	query = "INSERT INTO press_info press_name VALUES (\'" + info.get_name() +"\')";
+	sql_query.exec(query);
+	query = "SELECT press_index FROM press_info WHERE press_name = \'" + info.get_name() + "\'";
+	sql_query.exec(query);
+	if (sql_query.next()) {
+		return sql_query.value(0).toULongLong();
+	}
+	return 0;
+}
+
+bool DatabaseRepository::update_book_info(QString ISBN, LibraryBookInfo::Book book)
+{
+	QString query = "UPDATE book SET book_name = \'" + book.get_book_name() + "\', publish_info = " + QString::number(book.get_press_id()) + ", author_info = " + QString::number(book.get_author_id()) +
+		", language_info = \'" + book.get_language_info() + "\', book_version = \'" + book.get_book_version() + "\', brief_intro = \'" + book.get_book_brief() + "\' WHERE ISBN = \'" + ISBN + "\'";
+	QSqlQuery sql_query;
+	return sql_query.exec(query);
 }
 
 bool check_username_usable(QString user_name){
