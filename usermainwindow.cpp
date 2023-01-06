@@ -26,6 +26,10 @@ userMainWindow::userMainWindow(QWidget *parent) :
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     
+
+	connect(ui->search_btn, SIGNAL(clicked()), this, SLOT(on_search_btn_clicked()));
+	connect(ui->borrow_btn, SIGNAL(clicked()), this, SLOT(on_borrow_btn_clicked()));
+	connect(ui->pushButton_4, SIGNAL(clicked()), this, SLOT(on_exit_btn_clicked()));
 }
 
 userMainWindow::~userMainWindow()

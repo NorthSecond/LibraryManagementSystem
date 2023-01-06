@@ -41,10 +41,11 @@ void BookRtnDialog::on_search_btn_clicked()
 	infos = db_repo->searchBookBrief(ui->lineEdit->text().toULongLong());
 	for (int i = 0; i < infos.size(); i++)
 	{
-		mod->setItem(i, 0, new QStandardItem(infos[i].get_book_index()));
+		mod->setItem(i, 0, new QStandardItem(QString::number(infos[i].get_book_index())));
 		mod->setItem(i, 1, new QStandardItem(infos[i].get_ISBN()));
 		mod->setItem(i, 2, new QStandardItem(infos[i].get_book_name()));
-		mod->setItem(i, 3, new QStandardItem(infos[i].get_book_status()));
+		mod->setItem(i, 3, new QStandardItem(infos[i].get_book_status() == LibraryBookInfo::onShelf ? "在架" :
+			infos[i].get_book_status() == LibraryBookInfo::Borrowed ? "借出" : "损毁"));
 	}
 }
 

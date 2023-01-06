@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>banned.svg</file>
+        <file>return.svg</file>
+        <file>book.svg</file>
+        <file>account.svg</file>
+    </qresource>
+</RCC>

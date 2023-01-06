@@ -14,6 +14,7 @@ AdminMainWidget::AdminMainWidget(QGraphicsView* view, QString name, QWidget* par
 {
 	ui->setupUi(this);
 	ui->grap->setScene(view->scene());
+	ui->grap->show();
 	ui->name_lbl->setText(name);
 }
 
@@ -22,6 +23,7 @@ AdminMainWidget::AdminMainWidget(QString name, QWidget* parent) :
 	ui(new Ui::AdminMainWidget)
 {
 	ui->setupUi(this);
+	ui->grap->hide();
 	ui->name_lbl->setText(name);
 }
 

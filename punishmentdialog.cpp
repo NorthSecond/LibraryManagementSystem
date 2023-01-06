@@ -41,7 +41,7 @@ void punishmentDialog::on_searchButton_clicked()
 		//mod->setItem(i, 2, new QStandardItem(infos[i].book_name));
 		mod->setItem(i, 3, new QStandardItem(infos[i].get_punish_time().toString("yyyy-MM-dd")));
 		//mod->setItem(i, 4, new QStandardItem(infos[i].));
-		if (infos[i].get_punish_type() == 0) {
+		if (infos[i].get_punish_type() == 1) {
 			mod->setItem(i, 4, new QStandardItem("超时"));
 		}
 		else {

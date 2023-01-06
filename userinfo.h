@@ -3,10 +3,10 @@
 
 namespace User{
     enum Role{
-        ADMIN,
         STUDENT,
         TEACHER,
-        OUTCOME
+        OUTCOME,
+        ADMIN
     };
 
     enum Status{
@@ -27,7 +27,7 @@ private:
     unsigned int borrowed_num;
 	ConnectionInfo connection_info;
 public:
-    UserInfo(unsigned long long user_id, QString user_name, User::Role user_role, User::Status user_status, ConnectionInfo conn);
+	UserInfo(unsigned long long user_id, QString user_name, User::Role user_role, User::Status user_status, ConnectionInfo conn, unsigned int borrowed_num = 0);
     UserInfo();
 
 	unsigned long long get_user_id();
@@ -36,7 +36,6 @@ public:
 	User::Status get_user_status();
 	unsigned int get_borrowed_num();
 	ConnectionInfo get_connection_info();
-	
 };
 
 class AdminInfo

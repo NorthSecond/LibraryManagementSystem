@@ -1,26 +1,26 @@
 #include "bookmanagementdialog.h"
 #include "ui_bookmanagementdialog.h"
 
-BookManagementDialog::BookManagementDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::BookManagementDialog)
+BookManagementDialog::BookManagementDialog(QWidget* parent) :
+	QDialog(parent),
+	ui(new Ui::BookManagementDialog)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
 	// 设置 ISBN_ra 和 idx_ra 为互斥
 	ui->ISBN_ra->setAutoExclusive(true);
 	ui->idx_ra->setAutoExclusive(true);
-    
+
 	mod = new QStandardItemModel(this);
 	mod->setHorizontalHeaderItem(0, new QStandardItem(QObject::tr("书号")));
 	mod->setHorizontalHeaderItem(1, new QStandardItem(QObject::tr("ISBN")));
 	mod->setHorizontalHeaderItem(2, new QStandardItem(QObject::tr("书名")));
 	mod->setHorizontalHeaderItem(3, new QStandardItem(QObject::tr("状态")));
-	
-	ui->book_tbl->setModel(mod);
-	ui->book_tbl->setEditTriggers(QAbstractItemView::DoubleClicked);
-	ui->book_tbl->setSelectionMode(QAbstractItemView::SingleSelection);
-	
+
+	ui->tableView->setModel(mod);
+	ui->tableView->setEditTriggers(QAbstractItemView::DoubleClicked);
+	ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+
 	// 设置按钮组和互斥
 	btnGroup = new QButtonGroup(this);
 	btnGroup->addButton(ui->ISBN_ra);
@@ -28,7 +28,7 @@ BookManagementDialog::BookManagementDialog(QWidget *parent) :
 	btnGroup->setExclusive(true);
 	// 设置默认选中 ISBN_ra
 	ui->ISBN_ra->setChecked(true);
-	
+
 	connect(ui->search_btn, SIGNAL(clicked()), this, SLOT(on_search_btn_clicked()));
 	connect(ui->new_bookinfo_btn, SIGNAL(clicked()), this, SLOT(on_add_book_info_btn_clicked()));
 	connect(ui->save_bookinfo_btn, SIGNAL(clicked()), this, SLOT(on_modify_book_info_btn_clicked()));
@@ -40,7 +40,7 @@ BookManagementDialog::BookManagementDialog(QWidget *parent) :
 
 BookManagementDialog::~BookManagementDialog()
 {
-    delete ui;
+	delete ui;
 }
 
 void BookManagementDialog::getAdminInfo(AdminInfo info)
@@ -87,11 +87,11 @@ void BookManagementDialog::on_search_btn_clicked()
 
 	// 显示查询结果
 	for (int i = 0; i < infos.size(); i++) {
-		mod->setItem(i, 0, new QStandardItem(infos[i].get_book_index()));
+		mod->setItem(i, 0, new QStandardItem(QString::number(infos[i].get_book_index())));
 		mod->setItem(i, 1, new QStandardItem(infos[i].get_book().get_ISBN()));
 		mod->setItem(i, 2, new QStandardItem(infos[i].get_book().get_book_name()));
-		mod->setItem(i, 3, new QStandardItem(infos[i].get_book_status() == LibraryBookInfo::onShelf ? 
-			"在架上" : infos[i].get_book_status() == LibraryBookInfo::Borrowed ? "借出": "损毁"));
+		mod->setItem(i, 3, new QStandardItem(infos[i].get_book_status() == LibraryBookInfo::onShelf ?
+			"在架上" : infos[i].get_book_status() == LibraryBookInfo::Borrowed ? "借出" : "损毁"));
 	}
 
 	// 图书内容显示
@@ -103,7 +103,7 @@ void BookManagementDialog::on_search_btn_clicked()
 	ui->brief_edt->setText(now_book.get_book_brief());
 }
 
-void BookManagementDialog::on_add_book_btn_clicked() 
+void BookManagementDialog::on_add_book_btn_clicked()
 {
 	if (db_repo->addBook(now_book, LibraryBookInfo::onShelf)) {
 		QMessageBox::information(this, "提示", "添加成功");
@@ -118,12 +118,13 @@ void BookManagementDialog::on_add_book_btn_clicked()
 void BookManagementDialog::on_modify_book_btn_clicked()
 {
 	// 获取选中的行
-	QModelIndexList indexs = ui->book_tbl->selectionModel()->selectedRows();
-	if (indexs.size() == 0) {
+	QModelIndex index = ui->tableView->selectionModel()->currentIndex();
+	if (!index.isValid()) {
 		QMessageBox::warning(this, "错误", "未选中任何行");
 		return;
 	}
-	int row = indexs[0].row();
+	int row = index.row();
+	
 	// 获取选中的书号
 	QString book_index = mod->item(row, 0)->text();
 	// 获取选中的状态
@@ -158,12 +159,12 @@ void BookManagementDialog::on_modify_book_btn_clicked()
 void BookManagementDialog::on_delete_book_btn_clicked()
 {
 	// 获取选中的行
-	QModelIndexList indexs = ui->book_tbl->selectionModel()->selectedRows();
-	if (indexs.size() == 0) {
+	QModelIndex index = ui->tableView->selectionModel()->currentIndex();
+	if (!index.isValid()) {
 		QMessageBox::warning(this, "错误", "未选中任何行");
 		return;
 	}
-	int row = indexs[0].row();
+	int row = index.row();
 	// 获取选中的书号
 	QString book_index = mod->item(row, 0)->text();
 
@@ -196,19 +197,26 @@ void BookManagementDialog::on_add_book_info_btn_clicked()
 		QMessageBox::warning(this, "错误", "输入内容不能为空");
 		return;
 	}
-	
+
 	// 设置图书信息
-	 
+
 	LibraryBookInfo::AuthorInfo author(0, auth);
 	LibraryBookInfo::PressInfo press_info(0, press);
-	
+
 	unsigned long long author_id = db_repo->add_author_info(author);
 	unsigned long long press_id = db_repo->add_press_info(press_info);
 
 	author.set_author_id(author_id);
 	press_info.set_press_id(press_id);
-	
+
 	LibraryBookInfo::Book newBook(ISBN, book_name, press_info, author, lang, ver, brief);
+	if (db_repo->addBookInfo(newBook)) {
+		QMessageBox::information(this, "提示", "添加成功");
+	}
+	else {
+		QMessageBox::warning(this, "错误", "添加失败");
+	}
+
 }
 
 void BookManagementDialog::on_modify_book_info_btn_clicked()

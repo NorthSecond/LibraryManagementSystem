@@ -105,6 +105,7 @@ void ReaderAccountDialog::on_add_btn_clicked()
 		QMessageBox::warning(this, "警告", "请填写完整信息");
 		return;
 	}
+	
 	User::Role role = User::Role(ui->type_cbox->currentIndex());
 	User::Status status = User::Status(ui->stat_edt->currentIndex());
 	

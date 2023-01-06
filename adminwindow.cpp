@@ -9,7 +9,7 @@ AdminWindow::AdminWindow(QWidget *parent) :
 
 	this->setWindowTitle("图书管理系统-管理员");
 	//this->setWindowIcon(QIcon("icon.png"));
-	
+
     this->ui->acc_man_wid = new AdminMainWidget("账户管理", this->ui->centralwidget);
 	this->ui->book_man_wid = new AdminMainWidget("图书管理", this->ui->centralwidget);
 	this->ui->rtn_man_wid = new AdminMainWidget("图书归还", this->ui->centralwidget);

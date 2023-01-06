@@ -2,6 +2,10 @@
 
 #include <QMainWindow>
 #include <QMessagebox>
+//#include <QtSvg>
+//#include <QtSvg/QSvgGenerator>
+//#include <QtSvg/QSvgRenderer>
+//#include <QGraphicsSvgItem>
 
 #include "databaseRepository.h"
 #include "adminmainwidget.h"

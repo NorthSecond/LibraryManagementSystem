@@ -41,7 +41,7 @@
    <property name="font">
     <font>
      <family>思源宋体 CN Heavy</family>
-     <pointsize>22</pointsize>
+     <pointsize>30</pointsize>
      <bold>true</bold>
     </font>
    </property>

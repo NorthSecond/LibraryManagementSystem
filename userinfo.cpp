@@ -1,11 +1,12 @@
 #include "userinfo.h"
 
-UserInfo::UserInfo(unsigned long long user_id, QString user_name, User::Role user_role, User::Status user_status, ConnectionInfo conn)
+UserInfo::UserInfo(unsigned long long user_id, QString user_name, User::Role user_role, User::Status user_status, ConnectionInfo conn, unsigned int borrowed_num)
 {
 	this->user_id = user_id;
 	this->user_name = user_name;
 	this->user_role = user_role;
 	this->user_status = user_status;
+	this->borrowed_num = borrowed_num;
 	this->connection_info = conn;
 }
 

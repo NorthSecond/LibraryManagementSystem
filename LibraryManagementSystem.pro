@@ -1,5 +1,7 @@
 QT       += core gui
 QT += sql
+QT += svg
+QT += svgwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -56,3 +58,6 @@ FORMS += \
     punishmentdialog.ui \
     readeraccountdialog.ui \
     usermainwindow.ui
+
+RESOURCES += \
+    icons.qrc
