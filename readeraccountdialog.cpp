@@ -25,9 +25,9 @@ ReaderAccountDialog::ReaderAccountDialog(QWidget *parent) :
 	
 	// select
 	connect(ui->acc_tbl->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)), this, SLOT(on_mod_selected()));
-	connect(ui->new_btn, SIGNAL(clicked()), this, SLOT(on_add_btn_selected()));
-	connect(ui->change_btn, SIGNAL(clicked()), this, SLOT(on_change_btn_selected()));
-	connect(ui->del_btn, SIGNAL(clicked()), this, SLOT(on_del_btn_selected()));
+	connect(ui->new_btn, SIGNAL(clicked()), this, SLOT(on_add_btn_clicked()));
+	connect(ui->change_btn, SIGNAL(clicked()), this, SLOT(on_change_btn_clicked()));
+	connect(ui->del_btn, SIGNAL(clicked()), this, SLOT(on_del_btn_clicked()));
 	connect(ui->back_btn, SIGNAL(clicked()), this, SLOT(on_back_btn_clicked()));
 }
 
@@ -124,7 +124,7 @@ void ReaderAccountDialog::on_add_btn_clicked()
 
 void ReaderAccountDialog::on_change_btn_clicked()
 {
-	if (ui->name_edt->text().isEmpty() || ui->phone_edt->text().isEmpty() || ui->type_cbox->currentIndex() == -1 || ui->stat_edt->currentIndex() == -1)
+	if (ui->name_edt->text() == "0" || ui->phone_edt->text().isEmpty() || ui->type_cbox->currentIndex() == -1 || ui->stat_edt->currentIndex() == -1)
 	{
 		QMessageBox::warning(this, "警告", "请填写完整信息");
 		return;

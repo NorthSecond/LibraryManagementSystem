@@ -57,10 +57,10 @@ void userMainWindow::on_search_btn_clicked()
 	}
 	else if (!ISBN.isEmpty())
 	{
-		infos = db_repo->get_books_by_ISBN(ISBN);
+		infos = (QVector<BookInfo>)db_repo->get_books_by_ISBN(ISBN);
 	}
 	else {
-		infos = db_repo->get_books_by_name(name);
+		infos = (QVector<BookInfo>)db_repo->get_books_by_name(name);
 	}
 	
 	mod->clear();
@@ -102,6 +102,13 @@ void userMainWindow::on_borrow_btn_clicked()
 	if (info.get_book_status() != LibraryBookInfo::onShelf)
 	{
 		QMessageBox::warning(this, "警告", "该书已被借出或损毁");
+		return;
+	}
+	
+	// 检查限额
+	if (db_repo->is_user_limited(userId))
+	{
+		QMessageBox::warning(this, "警告", "您已达到借书上限");
 		return;
 	}
 	if (db_repo->borrow_book(userId, info.get_book_index()))

@@ -298,10 +298,37 @@ LibraryBookInfo::Book DatabaseRepository::get_book_by_ISBN(QString ISBN) {
 	QSqlQuery sql_query;
 	sql_query.exec(query);
 	if (sql_query.next()) {
-		res = LibraryBookInfo::Book(ISBN, sql_query.value(1).toString(), sql_query.value(2).toULongLong(), sql_query.value(3).toULongLong(),
+		LibraryBookInfo::PressInfo press = get_press_by_id(sql_query.value(2).toULongLong());
+		LibraryBookInfo::AuthorInfo author = get_auth_by_id(sql_query.value(3).toULongLong());
+		res = LibraryBookInfo::Book(ISBN, sql_query.value(1).toString(), press, author, 
 			sql_query.value(4).toString(), sql_query.value(5).toString(), sql_query.value(6).toString());
 	}
 	return res;
+}
+
+QVector<BookInfo> DatabaseRepository::get_books_by_ISBN(QString ISBN)
+{
+	return QVector<BookInfo>();
+}
+
+QVector<BookInfo> DatabaseRepository::get_books_by_name(QString book_name)
+{
+	return QVector<BookInfo>();
+}
+
+unsigned long long DatabaseRepository::addBookInfo(LibraryBookInfo::Book book)
+{
+	return 0;
+}
+
+unsigned long long DatabaseRepository::addBook(LibraryBookInfo::Book book, LibraryBookInfo::bookStatus status)
+{
+	return 0;
+}
+
+bool DatabaseRepository::deleteBook(unsigned long long book_index)
+{
+	return false;
 }
 
 bool check_username_usable(QString user_name){
@@ -317,6 +344,17 @@ bool check_username_usable(QString user_name){
         return false;
     }
     return true;
+}
+
+bool DatabaseRepository::is_user_limited(unsigned long long user_id)
+{
+	// INNER JOIN
+	QString query = "SELECT borrowed_num, num_limit from reader_info as ri INNER JOIN reader_type as rt ON ri.reader_type = rt.typename WHERE reader_id = " + QString::number(user_id);
+	QSqlQuery sql_query;
+	sql_query.exec(query);
+	if (sql_query.next()) {
+		return sql_query.value(0).toULongLong() >= sql_query.value(1).toULongLong();
+	}
 }
 
 bool DatabaseRepository::borrow_book(unsigned long long user_id, unsigned long long book_id){
@@ -346,13 +384,27 @@ bool DatabaseRepository::rtn_book(unsigned long long book_id){
 		QSqlQuery query;
 		query.exec("UPDATE book SET book_status = '在架上' WHERE book_id = " + QString::number(book_id));
 		// 找到借阅记录进行归还
-		query.exec("set @log_id = 0;");
-		query.exec("set @reader_id = 0;");
-		query.exec("SELECT (id into @log_id, reader_id into @reader_id) FROM lend_log WHERE book_index = " + QString::number(book_id) + " SORT BY lend_time DESC LIMIT 1;");
+		query.exec("SET @log_id = 0;");
+		query.exec("SET @reader_id = 0;");
+		query.exec("SELECT id into @log_id, reader_id into @reader_id, FROM lend_log WHERE book_index = " + QString::number(book_id) + " SORT BY lend_time DESC LIMIT 1;");
 		// 用户借阅数量-1
 		query.exec("UPDATE reader_info SET borrowed_num = borrowed_num - 1 WHERE reader_id = @reader_id");
 		// 写入归还记录
 		query.exec("INSERT INTO lend_return_info (lend_id, return_time) VALUES (@log_id, " + QDateTime().toString("yyyy-MM-dd hh:mm:ss") + ");");
+		
+		// 判断是否超期
+		query.exec("SELECT lend_time into @lend_time FROM lend_log WHERE id = @log_id;");
+		query.exec("SET @time_diff = " + QDateTime().toString("yyyy-MM-dd hh:mm:ss") + ";");
+		query.exec("SET @tlimit = " + QString::number(30));
+		query.exec("SET @is_overdue = 0;");
+		query.exec("SELECT DATEDIFF(" + QDateTime().toString("yyyy-MM-dd hh:mm:ss") + ", @lend_time) into @diff;");
+		query.exec("SELECT time_limit into @tlimit FROM reader_type WHERE typename = (SELECT reader_type FROM reader_info WHERE reader_id = @reader_id);");
+		query.exec("SELECT IF(@diff > @tlimit, 1, 0) into @is_overdue;");
+		// 写入处罚记录
+		query.exec("IF @is_overdue = 1 THEN INSERT INTO violate_info (book_index, reader_id, banned_time, type_id, status) VALUES (" + 
+			QString::number(book_id) + ", @reader_id, " + QDateTime().toString("yyyy-MM-dd hh:mm:ss") + ", 1, 0);");
+		// 个人状态更新
+		query.exec("IF @is_overdue = 1 THEN UPDATE reader_info SET reader_status = '受限' WHERE reader_id = @reader_id;");
 		
 		if (!QSqlDatabase::database().commit())
 		{
@@ -389,62 +441,6 @@ bool DatabaseRepository::break_book(unsigned long long book_id) {
 	}
 }
 
-//LibraryBookInfo::Book find_book_from_ISBN(QString ISBN){
-//    QString query = "SELECT * FROM book WHERE ISBN = '" + ISBN + "';";
-//    QSqlQuery sql_query;
-//    sql_query.prepare(query);
-//    if(!sql_query.exec()){
-//        QMessageBox::critical(NULL, "Error", "Database operation Failed !");
-//        exit(2);
-//    }
-//    sql_query.next();
-//    LibraryBookInfo::Book book(sql_query.value(0), sql_query.value(1), sql_query.value(2).toULongLong(), sql_query.value(3).toLongLong(), sql_query.value(4), sql_query.value(5));
-//    return book;
-//}
-
-//bool insert_book_info(LibraryBookInfo::Book book){
-//    QString query = "INSERT INTO `book_info` (ISBN, book_name, press_id, author_id, language_info, version, brief) VALUES ('" + book.get_ISBN() + "', '" + book.get_book_name() + "', " + QString::number(book.get_press_id()) + ", " + QString::number(book.get_author_id()) + ", '" + book.get_language_info() + "', '" + book.get_book_version()
-// + "', '" + book.get_book_brief() ;
-//// "INSERT INTO book (ISBN, book_name, author, publisher, publish_date, price, book_index, book_status) VALUES ('" + book.ISBN + "', '" + book.book_name + "', '" + book.author + "', '" + book.publisher + "', '" + book.publish_date + "', " + QString::number(book.price) + ", " + QString::number(book.book_index) + ", " + QString::number(book.book_status) + ");";
-//    QSqlQuery sql_query;
-//    sql_query.prepare(query);
-//    return sql_query.exec();
-//}
-
-//bool get_book_numbers(LibraryBookInfo::Book book){
-//    QString book_ISBN = book.get_ISBN();
-//    QString query = "SELECT num(*) from `book` where `ISBN` = " + book.get_ISBN();
-//    QSqlQuery sql_query;
-//    sql_query.prepare(query);
-//    if(!sql_query.exec()){
-//        QMessageBox::critical(NULL, "Error", "Database operation Failed !");
-//        exit(2);
-//    }
-//    return sql_query.next();
-//}
-
-//bool insert_book(BookInfo book_info)
-//{
-//    LibraryBookInfo::Book book = book_info.get_book();
-//    //QString query = "INSERT INTO book (ISBN, book_name, author, publisher, publish_date, price, book_index, book_status) VALUES ('" + book.ISBN + "', '" + book.book_name + "', '" + book.author + "', '" + book.publisher + "', '" + book.publish_date + "', " + QString::number(book.price) + ", " + QString::number(book.book_index) + ", " + QString::number(book.book_status) + ");";
-
-//    QSqlQuery sql_query;
-//    sql_query.prepare(query);
-//    return sql_query.exec();
-//}
-
-//User::Status get_user_status(QString user_name){
-//    QString query = "SELECT status FROM user WHERE user_name = '" + user_name + "';";
-//    QSqlQuery sql_query;
-//    sql_query.prepare(query);
-//    if(!sql_query.exec()){
-//        QMessageBox::critical(NULL, "Error", "Database operation Failed !");
-//        exit(2);
-//    }
-//    sql_query.next();
-//    return (User::Status)sql_query.value(0).toUInt();
-//}
-
 QVector<PunishInfo> DatabaseRepository::get_punish_info(unsigned long long user_id)
 {
 	QVector<PunishInfo> res;
@@ -476,24 +472,6 @@ bool DatabaseRepository::punish(unsigned long long id, unsigned long long user_i
 	}
 	return true;
 }
-
-//void flush_all_status(){
-
-//}
-
-//unsigned int can_borrow_num(QString user_name){
-
-//}
-
-//bool change_user_info(unsigned long long user_id, UserInfo user_info){
-////    QString query = "UPDATE `user_info` SET `user_name` = '" + user_info.get_user_name() + "', `user_password` = '" + user_info.get_user_password() + "', `user_email` = '" + user_info.get_user_email() + "', `user_phone` = '" + user_info.get_user_phone() + "', `user_address` = '" + user_info.get_user_address() + "', `user_status` = " + QString::number(user_info.get_user_status()) + " WHERE `user_id` = " + QString::number(user_id) + ";";
-
-//    QSqlQuery sql_query;
-////    sql_query.prepare(query);
-//    return sql_query.exec();
-//}
-
-
 
 // global variable
 DatabaseRepository* db_repo = new DatabaseRepository();

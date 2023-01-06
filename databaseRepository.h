@@ -40,13 +40,14 @@ public:
 	LibraryBookInfo::PressInfo get_press_by_id(unsigned long long press_id);
 	LibraryBookInfo::AuthorInfo get_auth_by_id(unsigned long long author_id);
 	LibraryBookInfo::Book get_book_by_ISBN(QString ISBN);
+	QVector<BookInfo> get_books_by_ISBN(QString ISBN);
+	QVector<BookInfo> get_books_by_name(QString book_name);
     
     unsigned long long addBookInfo(LibraryBookInfo::Book book);
     unsigned long long addBook(LibraryBookInfo::Book book, LibraryBookInfo::bookStatus status);
-    bool changeBookStatus(unsigned long long book_index, LibraryBookInfo::bookStatus status);
     bool deleteBook(unsigned long long book_index);
     
-
+	bool is_user_limited(unsigned long long user_id);
     bool borrow_book(unsigned long long user_id, unsigned long long book_index);
     bool rtn_book(unsigned long long book_id);
     bool break_book(unsigned long long book_id);
