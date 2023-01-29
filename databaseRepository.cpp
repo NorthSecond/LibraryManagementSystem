@@ -620,8 +620,8 @@ bool DatabaseRepository::punish(unsigned long long id, unsigned long long user_i
 	if (db.transaction()) //启动事务操作
 	{
 		QSqlQuery query;
-		query.exec("UPDATE violate_info SET `status` = 1 WHERE id = " + QString::number(id)) + ";";
-		query.exec("UPDATE reader_info SET reader_status = \'正常\' where reader_id = " + QString::number(user_id)) + ";";
+        query.exec("UPDATE violate_info SET `status` = 1 WHERE id = " + QString::number(id)+ ";");
+        query.exec("UPDATE reader_info SET reader_status = \'正常\' where reader_id = " + QString::number(user_id) + ";");
 		query.clear();
 		if (db.commit())
 		{
